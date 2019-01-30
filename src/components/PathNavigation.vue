@@ -1,15 +1,10 @@
 <template>
   <nav>
     <v-toolbar flat app color="cyan" dark>
-      <v-toolbar-side-icon v-bind:class="{ isLoggedIn: notLoggedInYet }" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Data Collector</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon v-if="onLine">wifi</v-icon>
-        <v-icon v-if="!onLine" class="red--text">wifi_off</v-icon>
-      </v-btn>
+      <v-toolbar-side-icon v-bind:class="{ isLoggedIn: notLoggedInYet }" @click="drawer = !drawer"></v-toolbar-side-icon>
     </v-toolbar>
-
     <v-navigation-drawer v-model="drawer" app class="white">
       <v-divider></v-divider>
       <v-list class="pt-3">
@@ -34,20 +29,7 @@
 <script>
 export default {
   name: "PathNavigation",
-  mounted() {
-    window.addEventListener("online", this.updateOnlineStatus);
-    window.addEventListener("offline", this.updateOnlineStatus);
-  },
-  beforeDestroy() {
-    window.removeEventListener("online", this.updateOnlineStatus);
-    window.removeEventListener("offline", this.updateOnlineStatus);
-  },
-  methods: {
-    updateOnlineStatus(e) {
-      const { type } = e;
-      this.onLine = type === "online";
-    }
-  },
+  mounted() {},
   data() {
     return {
       hidden: false,

@@ -12,7 +12,9 @@
         <div>Account info</div>
       </v-tab-item>
       <v-tab-item>
-        <div>Session info</div>
+        <div>
+          <PathBingMap/>
+        </div>
       </v-tab-item>
       <v-tab-item>
         <ErrorTab/>
@@ -30,8 +32,9 @@
 <script>
 import ErrorTab from "@/tabs/ErrorTab";
 import UserTab from "@/tabs/UserTab";
+import PathBingMap from "@/components/PathBingMap";
 export default {
-  components: { ErrorTab, UserTab },
+  components: { ErrorTab, UserTab, PathBingMap },
 
   data() {
     return {

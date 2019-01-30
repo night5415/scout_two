@@ -68,7 +68,6 @@ export default {
   },
   data() {
     return {
-      api: "http://localhost:9013/scout/~api/login",
       snackbar: false,
       snackMessage: "",
       waiting: false,
@@ -82,14 +81,29 @@ export default {
     onLogin_Click() {
       var self = this;
       self.waiting = true;
-      self
-        .$pathLogin(self.username, self.password)
+
+      self.$pathUtil
+        .Login(self.username, self.password)
         .then(returnValue => {
           self.$store.dispatch("updateLogin", true);
+          this.$store.dispatch("updateUserId", returnValue.Id);
           self.$router.push("/home");
+
+          return self.$pathLocation.HasGeoLocationEnabled();
+        })
+        .then(hasGeo => {
+          if (hasGeo) {
+            return self.$pathLocation.GetCurrentPosition();
+          } else {
+            return {};
+          }
+        })
+        .then(location => {
+          self.$store.dispatch("updateLocation", location);
+          self.$pathData.location.Save(location);
         })
         .catch(err => {
-          self.$pathSaveError(err);
+          self.$pathData.error.Save(err);
 
           if (!err.response)
             err.response = {
@@ -115,6 +129,12 @@ export default {
         .finally(function() {
           self.waiting = false;
         });
+
+      //this will udpate location if coords change
+      self.$pathLocation.StartLocationWatch(location => {
+        self.$store.dispatch("updateLocation", location);
+        pathVue.$pathData.location.Save(location);
+      });
     }
   }
 };

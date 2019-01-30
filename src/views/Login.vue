@@ -1,9 +1,6 @@
 <template>
   <div>
     <Authenticate/>
-    <v-card flat color="transparent">
-      <v-img src="/img/icons/apple-touch-icon-180x180.png" contain height="90"></v-img>
-    </v-card>
   </div>
 </template>
 
@@ -19,9 +16,4 @@ export default {
 </script>
 
 <style>
-.fixed {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-}
 </style>

@@ -34,8 +34,8 @@ export default {
   },
   mounted() {
     var self = this;
-    self
-      .$pathGetErrors()
+    self.$pathData.error
+      .Get()
       .then(records => {
         records.forEach(err => {
           self.desserts.push({

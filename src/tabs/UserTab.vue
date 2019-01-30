@@ -34,10 +34,11 @@ export default {
     };
   },
   mounted: function() {
-    var self = this;
+    var self = this,
+      user = self.$store.getters.User;
 
-    self
-      .$pathGetUser("a7520a70-186d-40ef-b5eb-89945b177539")
+    self.$pathData.person
+      .GetById(user.Id)
       .then(result => {
         if (result) {
           self.$data.user.FirstName = result.FirstName;

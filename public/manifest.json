@@ -1,6 +1,6 @@
 {
-  "name": "VuetifyTest",
-  "short_name": "VuetifyTest",
+  "name": "Data Collector",
+  "short_name": "Collector",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

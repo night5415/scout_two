@@ -10,13 +10,15 @@ import VueMoment from 'vue-moment';
 import pathConst from '@/statics/pathConstants';
 
 //custom plugin
-import PathPlugin from '@/plugins/PathPlug.js';
-Vue.use(PathPlugin, pathConst);
+import PathUtil from '@/plugins/PathUtil.js';
+import PathLocation from '@/plugins/PathLocation.js';
+import PathData from '@/plugins/PathData.js'
+Vue.use(PathUtil);
+Vue.use(PathLocation);
+Vue.use(PathData);
+Vue.use(pathConst);
 //custom plugin
 
-//
-CreateDb(pathConst);
-// 
 Vue.use(VueAxios, axios);
 Vue.use(VueMoment);
 Vue.config.productionTip = false;
@@ -35,33 +37,45 @@ window.onerror = function (messageOrEvent, source, lineno, colno, error) {
     "column": colno
   };
 
-  this.pathVue.$pathSaveError(err);
+  this.pathVue.$pathData.error.Save(err);
   return true;
 }
 
 Vue.config.errorHandler = (error, vm, info) => {
-  vm.$pathSaveError(error);
+  vm.$pathData.error.Save(error);
 };
 Vue.config.warnHandler = function (msg, vm, trace) {
-  vm.$pathSaveError({ "message": msg, "stack": trace });
+  vm.$pathData.error.Save({ "message": msg, "stack": trace });
 }
+
+router.beforeResolve((to, from, next) => {
+  if (to.name === 'login')
+    next();
+  //if not logged in, go to login screen 
+  if (!window.pathVue || !window.pathVue.$store.state.isLoggedIn)
+    next('/');
+
+  // permissions are implemented on the router, we will need
+  // to setup a mechanism for checking if the user has a specific
+  // permission to continue
+  if (to.meta.requiresAuth) {
+    const promptValue = window.prompt('Do you have permission to continue?');
+    next(parseInt(promptValue) === to.meta.authValue)
+  } else {
+    next();
+  }
+});
 
 window.pathVue = new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  data: {
+    version: 1,
+    pathConst: pathConst
+  },
+  created: function () {
+    console.log(`Data Collector version ${this.version}`);
+    this.$pathUtil.CreateDatabase(this.pathConst);
+  }
 }).$mount("#app");
-
-function CreateDb(pathConst) {
-  var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
-  request.onupgradeneeded = function (event) {
-    // Save the IDBDatabase interface
-    var db = event.target.result;
-    // Create an objectStore sfor this database
-    db.createObjectStore(pathConst.dataStore.person, { keyPath: "Id" });
-    db.createObjectStore(pathConst.dataStore.customer, { keyPath: "Id" });
-    db.createObjectStore(pathConst.dataStore.account, { keyPath: "Id" });
-    db.createObjectStore(pathConst.dataStore.sessionData, { keyPath: "Id" });
-    db.createObjectStore(pathConst.dataStore.error, { keyPath: "Date" });
-  };
-}

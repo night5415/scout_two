@@ -6,7 +6,7 @@
 
     <v-card-text
       class="headline font-weight-bold"
-    >"Welcome to Scout 2.0, build with Vue.js, Vuitify and Love :)"</v-card-text>
+    >"Welcome to the Data Collector, build with Vue.js, Vuitify and Love :)"</v-card-text>
 
     <v-card-actions>
       <v-list-tile class="grow">
