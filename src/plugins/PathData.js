@@ -1,5 +1,6 @@
 import pathConst from '@/statics/pathConstants';
-// I would like to setup a central location where we can perform CRUD operations
+import pathSecure from '@/plugins/PathSecurity'
+// This is a central location where we can perform CRUD operations on IndexedDB
 // that can be accessed app wide instead of having it sprinkled throughout the code
 // base.
 

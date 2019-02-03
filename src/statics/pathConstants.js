@@ -13,7 +13,8 @@ var pathConst = {
     "route": {
         "login": { "name": "login", "path": "/" },
         "home": { "name": "home", "path": "/home" },
-        "dev": { "name": "development", "path": "/Dev" }
+        "dev": { "name": "development", "path": "/Dev" },
+        "sandbox": { "name": "sandbox", "path": "/sandbox" }
     }
 };
 

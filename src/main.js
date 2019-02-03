@@ -8,17 +8,19 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VueMoment from 'vue-moment';
 import pathConst from '@/statics/pathConstants';
+import VueSignaturePad from 'vue-signature-pad';
 
 //custom plugin
 import PathUtil from '@/plugins/PathUtil.js';
 import PathLocation from '@/plugins/PathLocation.js';
 import PathData from '@/plugins/PathData.js'
-Vue.use(PathUtil);
+Vue.use(PathUtil, getBaseUrl());
 Vue.use(PathLocation);
 Vue.use(PathData);
 Vue.use(pathConst);
 //custom plugin
 
+Vue.use(VueSignaturePad);
 Vue.use(VueAxios, axios);
 Vue.use(VueMoment);
 Vue.config.productionTip = false;
@@ -47,7 +49,10 @@ Vue.config.errorHandler = (error, vm, info) => {
 Vue.config.warnHandler = function (msg, vm, trace) {
   vm.$pathData.error.Save({ "message": msg, "stack": trace });
 }
-
+/**
+ * this function fires before each route change
+ * https://router.vuejs.org/api/#router-beforeresolve
+ */
 router.beforeResolve((to, from, next) => {
   if (to.name === 'login')
     next();
@@ -79,3 +84,8 @@ window.pathVue = new Vue({
     this.$pathUtil.CreateDatabase(this.pathConst);
   }
 }).$mount("#app");
+
+function getBaseUrl() {
+  //return window.location.host
+  return "https://test-lighthouse.abpathfinder.net";
+}

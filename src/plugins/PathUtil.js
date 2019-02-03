@@ -3,9 +3,10 @@ import axios from 'axios';
 import pathConst from '@/statics/pathConstants';
 
 const PathUtil = {
-    install(Vue) {
+    install(Vue, baseUrl) {
         Vue.prototype.$pathUtil = {
-            api: "https://test-lighthouse.abpathfinder.net/~api/login", //TODO: this will need to be calculated in the future
+            api: `${baseUrl}/~api/login`,
+            //api: "https://test-lighthouse.abpathfinder.net/~api/login", //TODO: this will need to be calculated in the future
             /**
              * this creates the local DB's in indexed db
              */
@@ -51,7 +52,7 @@ const PathUtil = {
 
                 formData.append("loginUserName", userName);
                 formData.append("loginPassword", passWord);
-                formData.append("timeZone", "America/Chicago");
+                formData.append("timeZone", "America/Chicago"); // will need to figure this out
                 formData.append("subMode", "mobile");
                 formData.append("deviceId", deviceId);
 
@@ -103,6 +104,22 @@ const PathUtil = {
              */
             Navigate: function (path) {
 
+            },
+            /**
+             * This will create our crypto key for 
+             * securing or IndexedDb
+             */
+            GenerateEncryptionKey: () => {
+                return window.crypto.subtle.generateKey(
+                    {
+                        name: "RSA-OAEP",
+                        modulusLength: 2048, //can be 1024, 2048, or 4096
+                        publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+                        hash: { name: "SHA-256" }, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+                    },
+                    true, //whether the key is extractable (i.e. can be used in exportKey)
+                    ["encrypt", "decrypt"] //must be ["encrypt", "decrypt"] or ["wrapKey", "unwrapKey"]
+                );
             }
         };
     }

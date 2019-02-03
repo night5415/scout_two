@@ -8,7 +8,8 @@ export default {
     return {};
   },
   mounted() {
-    pathVue.$pathGetCurrentPosition().then(position => {
+    var self = this;
+    self.$pathLocation.GetCurrentPosition().then(position => {
       var map = new Microsoft.Maps.Map(document.getElementById("map"), {
         center: new Microsoft.Maps.Location(
           position.coords.latitude,

@@ -102,6 +102,12 @@ export default {
           self.$store.dispatch("updateLocation", location);
           self.$pathData.location.Save(location);
         })
+        .then(() => {
+          return self.$pathUtil.GenerateEncryptionKey();
+        })
+        .then(key => {
+          self.$store.dispatch("updateEncryptionKey", key);
+        })
         .catch(err => {
           self.$pathData.error.Save(err);
 

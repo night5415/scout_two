@@ -3,13 +3,17 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
+// this is the single source of truth for the app,  we can store
+// session data here that does not need to be persisted across
+// multiple sessions. Persisted data will need to be stored in IndexedDB
 export default new Vuex.Store({
   state: {
+    encryptionKey: null,
     isOnline: true,
     user: {
       Id: null,
-      UserName: null,
-      PassWord: null,
+      UserName: "night5415",
+      PassWord: "11111111",
       Pin: null,
       hash: null,
       location: {}
@@ -19,9 +23,15 @@ export default new Vuex.Store({
   getters: {
     User: state => {
       return state.user;
+    },
+    Kye: state => {
+      return state.encryptionKey;
     }
   },
   mutations: {
+    _updateEncryptionKey(state, val) {
+      state.encryptionKey = val;
+    },
     _updateIsOnline(state, val) {
       state.isOnline = val;
     },
@@ -46,6 +56,9 @@ export default new Vuex.Store({
   },
   //put asynchronous code here, not in mutations
   actions: {
+    updateEncryptionKey: (context, value) => {
+      context.commit("_updateEncryptionKey", value);
+    },
     updateIsOnline: (context, value) => {
       context.commit("_updateIsOnline", value);
     },

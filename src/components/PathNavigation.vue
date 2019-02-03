@@ -37,9 +37,9 @@ export default {
       drawer: false,
       navLinks: [
         { key: 1, title: "Home", icon: "dashboard", url: "/Home" },
-        { key: 2, title: "About", icon: "question_answer", url: "/About" },
         { key: 3, title: "Login", icon: "vpn_key", url: "/" },
-        { key: 4, title: "Dev", icon: "developer_mode", url: "/Dev" }
+        { key: 4, title: "Dev", icon: "code", url: "/Dev" },
+        { key: 5, title: "Sandbox", icon: "developer_mode", url: "/Sandbox" }
       ]
     };
   },

@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import ErrorTab from "@/tabs/ErrorTab";
-import UserTab from "@/tabs/UserTab";
+import ErrorTab from "@/tabs/development/ErrorTab";
+import UserTab from "@/tabs/development/UserTab";
 import PathBingMap from "@/components/PathBingMap";
 export default {
   components: { ErrorTab, UserTab, PathBingMap },
