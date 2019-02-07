@@ -2,6 +2,13 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Login from "./views/Login.vue";
+
+import MyDay from "./views/ReportMyDay.vue";
+import Patient from "./views/Patient.vue";
+import NewEvent from "./views/NewEvent.vue";
+import Offline from "./views/WorkOffline.vue";
+import Error from "./views/Error.vue";
+
 import Development from "@/views/Development.vue";
 import SandBox from "@/views/SandBox.vue";
 import pathConst from '@/statics/pathConstants';
@@ -24,6 +31,26 @@ export default new Router({
       component: Home
     },
     {
+      path: pathConst.route.myday.path,
+      name: pathConst.route.myday.name,
+      component: MyDay
+    },
+    {
+      path: pathConst.route.patient.path,
+      name: pathConst.route.patient.name,
+      component: Patient
+    },
+    {
+      path: pathConst.route.new.path,
+      name: pathConst.route.new.name,
+      component: NewEvent
+    },
+    {
+      path: pathConst.route.offline.path,
+      name: pathConst.route.offline.name,
+      component: Offline
+    },
+    {
       path: pathConst.route.dev.path,
       name: pathConst.route.dev.name,
       component: Development,
@@ -36,7 +63,12 @@ export default new Router({
       path: pathConst.route.sandbox.path,
       name: pathConst.route.sandbox.name,
       component: SandBox
-    }
+    },
+    {
+      path: pathConst.route.error.path,
+      name: pathConst.route.error.name,
+      component: Error
+    },
   ]
 });
 

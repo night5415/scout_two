@@ -32,7 +32,7 @@
 <script>
 import ErrorTab from "@/tabs/development/ErrorTab";
 import UserTab from "@/tabs/development/UserTab";
-import PathBingMap from "@/components/PathBingMap";
+import PathBingMap from "@/components/shared/PathBingMap";
 export default {
   components: { ErrorTab, UserTab, PathBingMap },
 

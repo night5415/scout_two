@@ -5,7 +5,7 @@
   </div>
 </template> 
 <script>
-import sig from "@/components/PathSignature";
+import sig from "@/components/shared/PathSignature";
 export default {
   components: { sig },
   data() {
@@ -26,6 +26,13 @@ export default {
 </script>
 
 <style>
+#create .v-speed-dial {
+  position: absolute;
+}
+
+#create .v-btn--floating {
+  position: relative;
+}
 #signature {
   background-color: lightgray;
 }

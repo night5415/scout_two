@@ -13,12 +13,11 @@
 </template>
 
 <script>
-import PathNavigation from "@/components/PathNavigation";
+import PathNavigation from "@/components/global/PathNavigation";
 export default {
   name: "App",
   components: { PathNavigation },
   mounted() {
-    console.log("App mounted");
     window.addEventListener("online", this.updateOnlineStatus);
     window.addEventListener("offline", this.updateOnlineStatus);
   },

@@ -50,7 +50,8 @@ Vue.config.warnHandler = function (msg, vm, trace) {
   vm.$pathData.error.Save({ "message": msg, "stack": trace });
 }
 /**
- * this function fires before each route change
+ * this function fires before each route change, we can put custom
+ * logic to control the flow.
  * https://router.vuejs.org/api/#router-beforeresolve
  */
 router.beforeResolve((to, from, next) => {

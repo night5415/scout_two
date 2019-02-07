@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\node_modules",
+    "\\node_modules\\vue-axios",
+    "\\node_modules\\vue-router",
+    "\\node_modules\\vue-router\\types",
+    "\\src"
+  ],
+  "SelectedNode": "\\node_modules\\vue-axios\\index.d.ts",
+  "PreviewInSolutionExplorer": false
+}

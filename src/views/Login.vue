@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Authenticate from "@/components/PathAuthenticate";
+import Authenticate from "@/components/login/PathAuthenticate";
 export default {
   name: "PathLogin",
   components: { Authenticate },

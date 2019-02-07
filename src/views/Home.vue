@@ -1,13 +1,39 @@
 <template>
-  <PhoebeHello/>
+  <div>
+    <Phoebe :body="body" :title="title"/>
+  </div>
 </template>
 
 <script>
-import PhoebeHello from "../components/PhoebeHello";
-
+import Phoebe from "@/components/shared/Phoebe";
 export default {
+  name: "home",
   components: {
-    PhoebeHello
+    Phoebe
+  },
+  beforeMount() {},
+  mounted() {},
+  beforeCreate() {},
+  beforeDestroy() {},
+  destroyed() {},
+  data() {
+    return {
+      body:
+        "Welcome to the Data Collector, build with Vue.js, Vuitify and Love :)",
+      title: "Welcome Home"
+    };
+  },
+  methods: {
+    name() {}
+  },
+  filters: {
+    fnName: function(value) {
+      return value;
+    }
   }
 };
 </script>
+
+<style scope>
+</style>
+
