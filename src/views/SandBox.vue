@@ -2,12 +2,14 @@
   <div>
     <sig title="Guardian signature" ref="signatureBox" referenceId="guardianSignature"/>
     <v-btn flat large color="primary" v-on:click="getSignature">Get Signature</v-btn>
+    <loader/>
   </div>
 </template> 
 <script>
 import sig from "@/components/shared/PathSignature";
+import loader from "@/components/global/PathLoader";
 export default {
-  components: { sig },
+  components: { sig, loader },
   data() {
     return {
       dialog: false

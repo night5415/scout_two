@@ -1,6 +1,8 @@
 import { toJson } from "really-relaxed-json";
 import axios from 'axios';
 import pathConst from '@/statics/pathConstants';
+import router from "@/router";
+import store from "@/pathStore";
 
 const PathUtil = {
     install(Vue, baseUrl) {
@@ -99,11 +101,21 @@ const PathUtil = {
                     });
             },
             /**
+             * 
+             * @param {*} params 
+             */
+            LogOut: function (params) {
+                var self = this,
+                    str = store;
+                str.dispatch("resetState", null);
+                self.Navigate('/');
+            },
+            /**
              * pass in a valid path to auto navigate
              * @param {pathConst} path - where to navigate to
              */
             Navigate: function (path) {
-
+                router.push(path);
             },
             /**
              * This will create our crypto key for 

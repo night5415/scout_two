@@ -24,7 +24,7 @@ export default new Vuex.Store({
     User: state => {
       return state.user;
     },
-    Kye: state => {
+    Key: state => {
       return state.encryptionKey;
     }
   },
@@ -52,6 +52,14 @@ export default new Vuex.Store({
     },
     _updateLocation(state, val) {
       state.user.location = val;
+    },
+    _resetState(state, val) {
+      state.isLoggedIn = false;
+      state.user.Id = val;
+      state.user.UserName = val;
+      state.encryptionKey = val;
+      state.user.Pin = val;
+      state.user.PassWord = val;
     }
   },
   //put asynchronous code here, not in mutations
@@ -79,6 +87,9 @@ export default new Vuex.Store({
     },
     updateLocation: (context, value) => {
       context.commit("_updateLocation", value);
+    },
+    resetState: (context, value) => {
+      context.commit("_resetState", null);
     }
   }
 });

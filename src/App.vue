@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <PathNavigation/>
+    <PathConfirm ref="pathConfirm"/>
     <v-content>
       <transition name="fade">
         <router-view></router-view>
@@ -14,12 +15,14 @@
 
 <script>
 import PathNavigation from "@/components/global/PathNavigation";
+import PathConfirm from "@/components/global/PathConfirm";
 export default {
   name: "App",
-  components: { PathNavigation },
+  components: { PathNavigation, PathConfirm },
   mounted() {
     window.addEventListener("online", this.updateOnlineStatus);
     window.addEventListener("offline", this.updateOnlineStatus);
+    this.$root.$confirm = this.$refs.pathConfirm;
   },
   beforeDestroy() {
     window.removeEventListener("online", this.updateOnlineStatus);
