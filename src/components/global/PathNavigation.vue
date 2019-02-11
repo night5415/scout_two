@@ -1,11 +1,22 @@
 <template>
   <nav>
-    <v-toolbar flat app color="cyan" dark>
+    <v-toolbar flat app fixed>
       <v-toolbar-side-icon v-bind:class="{ isLoggedIn: notLoggedInYet }" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
       <v-toolbar-title>Data Collector</v-toolbar-title>
     </v-toolbar>
-    <v-navigation-drawer v-model="drawer" app class="white">
+    <v-navigation-drawer v-model="drawer" app fixed :mini-variant.sync="mini">
+      <v-toolbar flat class="transparent">
+        <v-list class="pa-0">
+          <v-list-tile avatar>
+            <v-list-tile-action>
+              <v-btn icon @click.stop="mini = !mini">
+                <v-icon>chevron_left</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
       <v-list class="pt-3">
         <v-list-tile
           v-for="link in navLinks"
@@ -45,6 +56,7 @@ export default {
       hidden: false,
       onLine: navigator.onLine,
       drawer: null,
+      mini: false,
       navLinks: [
         { key: 1, title: "Home", icon: "home", url: "/Home" },
         { key: 2, title: "Report My Day", icon: "event_note", url: "/MyDay" },
