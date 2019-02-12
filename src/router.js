@@ -8,6 +8,7 @@ import Patient from "./views/Patient.vue";
 import NewEvent from "./views/NewEvent.vue";
 import Offline from "./views/WorkOffline.vue";
 import Error from "./views/Error.vue";
+import Setting from "./views/Setting.vue";
 
 import Development from "@/views/Development.vue";
 import SandBox from "@/views/SandBox.vue";
@@ -69,6 +70,11 @@ export default new Router({
       name: pathConst.route.error.name,
       component: Error
     },
+    {
+      path: pathConst.route.setting.path,
+      name: pathConst.route.setting.name,
+      component: Setting
+    }
   ]
 });
 

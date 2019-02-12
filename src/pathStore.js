@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     encryptionKey: null,
     isOnline: true,
+    isLoggedIn: false,
     user: {
       Id: null,
       UserName: "night5415",
@@ -18,7 +19,13 @@ export default new Vuex.Store({
       hash: null,
       location: {}
     },
-    isLoggedIn: false
+    settings: {
+      theme: {
+        light: false,
+        dark: true,
+        pathfinder: false
+      }
+    }
   },
   getters: {
     User: state => {
@@ -26,6 +33,9 @@ export default new Vuex.Store({
     },
     Key: state => {
       return state.encryptionKey;
+    },
+    Dark: state => {
+      return state.settings.theme.dark;
     }
   },
   mutations: {
@@ -60,6 +70,9 @@ export default new Vuex.Store({
       state.encryptionKey = val;
       state.user.Pin = val;
       state.user.PassWord = val;
+    },
+    _updateDark(state, val) {
+      state.settings.theme.dark = val;
     }
   },
   //put asynchronous code here, not in mutations
@@ -90,6 +103,9 @@ export default new Vuex.Store({
     },
     resetState: (context, value) => {
       context.commit("_resetState", null);
+    },
+    updateDark: (context, value) => {
+      context.commit("_updateDark", value);
     }
   }
 });

@@ -5,12 +5,19 @@
       <v-spacer></v-spacer>
       <v-toolbar-title>Data Collector</v-toolbar-title>
     </v-toolbar>
-    <v-navigation-drawer v-model="drawer" app fixed :mini-variant.sync="mini">
-      <v-toolbar flat class="transparent">
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      fixed
+      :mini-variant.sync="mini"
+      v-bind:class="{ isLoggedIn: notLoggedInYet }"
+    >
+      <v-toolbar flat class="transparent" fixed>
         <v-list class="pa-0">
           <v-list-tile avatar>
+            <v-spacer></v-spacer>
             <v-list-tile-action>
-              <v-btn icon @click.stop="mini = !mini">
+              <v-btn icon @click.stop="mini = !mini" v-if="!mini">
                 <v-icon>chevron_left</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -63,41 +70,39 @@ export default {
         { key: 3, title: "Patient", icon: "person", url: "/Patient" },
         { key: 4, title: "New Event", icon: "calendar_today", url: "/New" },
         { key: 5, title: "Work Offline", icon: "power", url: "/Offline" },
-        { key: 6, title: "Go To PHI", icon: "open_in_new", action: "phi" },
-        { key: 7, title: "Log Out", icon: "exit_to_app", action: "logout" }
+        {
+          key: 6,
+          title: "Go To PHI",
+          icon: "open_in_new",
+          action: "linkToPHI"
+        },
+        { key: 7, title: "Log Out", icon: "exit_to_app", action: "logOut" },
+        { key: 8, title: "Settings", icon: "settings", url: "/Setting" }
       ],
       devLinks: [
-        { key: 8, title: "Dev", icon: "code", url: "/Dev" },
-        { key: 9, title: "Sandbox", icon: "developer_mode", url: "/Sandbox" }
+        { key: 9, title: "Dev", icon: "code", url: "/Dev" },
+        { key: 10, title: "Sandbox", icon: "developer_mode", url: "/Sandbox" }
       ]
     };
   },
   methods: {
     navClick(event, action) {
       var self = this;
-      switch (action) {
-        case "phi":
-          this.linkToPHI();
-          break;
-        case "logout":
-          this.logOut(self);
-          break;
-        default:
-          break;
+      if (self[action] instanceof Function) {
+        self[action]();
       }
     },
     linkToPHI() {
-      console.log("going to PHI");
       window.open("https://test-lighthouse.abpathfinder.net", "_blank");
     },
     logOut(self) {
-      console.log("logging out");
-      this.$root.$confirm
+      var self = this;
+      self.$root.$confirm
         .open({
-          title: "help",
-          body: "here ya go",
-          accept: "Yep",
-          decline: "nope"
+          title: "Are you sure?",
+          body: "Clicking yes will log you out!",
+          accept: "Yes",
+          decline: "No"
         })
         .then(e => {
           if (e) {

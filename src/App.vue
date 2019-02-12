@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app :dark="goDark">
     <PathNavigation/>
     <PathConfirm ref="pathConfirm"/>
     <transition name="fade" mode="out-in">
@@ -33,6 +33,13 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    goDark: {
+      get() {
+        return this.$store.getters.Dark;
+      }
+    }
   }
 };
 </script>

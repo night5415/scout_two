@@ -4,9 +4,9 @@
       <v-flex flex sm8 md6 lg4>
         <v-card flat color="transparent">
           <form action>
-            <v-text-field :counter="10" v-model="username" label="UserName" required></v-text-field>
+            <v-text-field v-model="username" label="UserName" required></v-text-field>
             <v-text-field v-model="password" :counter="10" label="Password" required></v-text-field>
-            <v-text-field v-model="pin" label="Pin" required></v-text-field>
+            <!-- <v-text-field v-model="pin" label="Pin" required type="number"></v-text-field> -->
           </form>
           <v-card-actions>
             <v-btn
@@ -20,16 +20,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-snackbar
-      v-model="snackbar"
-      :bottom="y === 'bottom'"
-      :left="x === 'left'"
-      :multi-line="mode === 'multi-line'"
-      :right="x === 'right'"
-      :timeout="timeout"
-      :top="y === 'top'"
-      :vertical="mode === 'vertical'"
-    >
+    <v-snackbar v-model="snackbar" :timeout="timeout">
       {{snackMessage}}
       <v-btn color="pink" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -38,6 +29,7 @@
 
 <script>
 import { toJson } from "really-relaxed-json";
+import security from "@/plugins/PathSecurity";
 export default {
   name: "PathAuthenticate",
   computed: {
@@ -71,9 +63,7 @@ export default {
       snackbar: false,
       snackMessage: "",
       waiting: false,
-      timeout: 2000,
-      x: null,
-      y: null,
+      timeout: 3000,
       mode: null
     };
   },
@@ -85,10 +75,17 @@ export default {
       self.$pathUtil
         .Login(self.username, self.password)
         .then(returnValue => {
-          self.$store.dispatch("updateLogin", true);
-          this.$store.dispatch("updateUserId", returnValue.Id);
           self.$router.push("/home");
-
+          self.$store.dispatch("updateLogin", true);
+          return self.$store.dispatch("updateUserId", returnValue.Id);
+        })
+        .then(a => {
+          return security.generateKey(self.username, self.password);
+        })
+        .then(key => {
+          return self.$store.dispatch("updateEncryptionKey", key);
+        })
+        .then(d => {
           return self.$pathLocation.HasGeoLocationEnabled();
         })
         .then(hasGeo => {
@@ -101,12 +98,6 @@ export default {
         .then(location => {
           self.$store.dispatch("updateLocation", location);
           self.$pathData.location.Save(location);
-        })
-        .then(() => {
-          return self.$pathUtil.GenerateEncryptionKey();
-        })
-        .then(key => {
-          self.$store.dispatch("updateEncryptionKey", key);
         })
         .catch(err => {
           self.$pathData.error.Save(err);

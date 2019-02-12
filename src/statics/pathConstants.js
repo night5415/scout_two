@@ -20,7 +20,8 @@ var pathConst = {
         "phi": { "name": "phi", "path": null },
         "dev": { "name": "development", "path": "/Dev" },
         "sandbox": { "name": "sandbox", "path": "/sandbox" },
-        "error": { "name": "error", "path": "/error" }
+        "error": { "name": "error", "path": "/error" },
+        "setting": { "name": "setting", "path": "/setting" }
     }
 };
 

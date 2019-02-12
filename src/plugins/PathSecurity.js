@@ -19,17 +19,50 @@ var pathSecurity = {
             data //ArrayBuffer of the data
         );
     },
-    generateKey: () => {
-        return window.crypto.subtle.generateKey(
-            {
-                name: "RSA-OAEP",
-                modulusLength: 2048, //can be 1024, 2048, or 4096
-                publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-                hash: { name: "SHA-256" }, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
-            },
-            true, //whether the key is extractable (i.e. can be used in exportKey)
-            ["encrypt", "decrypt"] //must be ["encrypt", "decrypt"] or ["wrapKey", "unwrapKey"]
-        );
+    generateKey: (userName, passWord) => {
+        var arrayBufferToHexString = (arrayBuffer) => {
+            var byteArray = new Uint8Array(arrayBuffer);
+            var hexString = "";
+            var nextHexByte;
+
+            for (var i = 0; i < byteArray.byteLength; i++) {
+                nextHexByte = byteArray[i].toString(16);
+                if (nextHexByte.length < 2) {
+                    nextHexByte = "0" + nextHexByte;
+                }
+                hexString += nextHexByte;
+            }
+            return hexString;
+        }
+        var stringToArrayBuffer = (string) => {
+            var encoder = new TextEncoder("utf-8");
+            return encoder.encode(string);
+        }
+
+        // First, create a PBKDF2 "key" containing the password
+        return window.crypto.subtle.importKey("raw", stringToArrayBuffer(passWord), {
+            "name": "PBKDF2"
+        }, false, ["deriveKey"]).// Derive a key from the password
+            then(function (baseKey) {
+                return window.crypto.subtle.deriveKey({
+                    "name": "PBKDF2",
+                    "salt": stringToArrayBuffer(userName),
+                    "iterations": 100,
+                    "hash": 'SHA-256'
+                }, baseKey, {
+                        "name": "AES-CBC",
+                        "length": 128
+                    }, // Key we want
+                    true, // Extrable
+                    ["encrypt", "decrypt"]// For new key
+                );
+            }).// Export it so we can display it
+            then(function (aesKey) {
+                return window.crypto.subtle.exportKey("raw", aesKey);
+            }).// Display it in hex format
+            then(function (keyBytes) {
+                return arrayBufferToHexString(keyBytes);
+            });
     }
 }
 

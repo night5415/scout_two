@@ -2,24 +2,12 @@
   <v-content>
     <v-container fluid fill-height>
       <v-layout>
-        <v-flex text-xs-center>
-          <v-tooltip left>
-            <v-btn slot="activator" :href="source" icon large target="_blank">
-              <v-icon large>code</v-icon>
+        <v-flex>
+          <v-tooltip>
+            <v-btn slot="activator" @click="getKey" icon large>
+              <v-icon large>build</v-icon>
             </v-btn>
-            <span>Source</span>
-          </v-tooltip>
-          <v-tooltip right>
-            <v-btn
-              slot="activator"
-              icon
-              large
-              href="https://codepen.io/johnjleider/pen/rJdVMq"
-              target="_blank"
-            >
-              <v-icon large>mdi-codepen</v-icon>
-            </v-btn>
-            <span>Codepen</span>
+            <span>Hit me!</span>
           </v-tooltip>
         </v-flex>
       </v-layout>
@@ -29,6 +17,7 @@
 <script>
 import sig from "@/components/shared/PathSignature";
 import loader from "@/components/global/PathLoader";
+import security from "@/plugins/PathSecurity";
 export default {
   components: { sig, loader },
   data() {
@@ -37,6 +26,9 @@ export default {
     };
   },
   methods: {
+    getKey() {
+      var x = security.generateKey("urs", "ll");
+    },
     getSignature() {
       var signatureBox = this.$refs.signatureBox;
       if (signatureBox) {
