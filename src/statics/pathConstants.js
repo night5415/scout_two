@@ -8,7 +8,8 @@ var pathConst = {
         "account": "account",
         "sessionData": "sessionData",
         "error": "error",
-        "location": "location"
+        "location": "location",
+        "participant": "participant"
     },
     "route": {
         "login": { "name": "login", "path": "/" },

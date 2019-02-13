@@ -6,86 +6,105 @@ Vue.use(Vuex);
 // this is the single source of truth for the app,  we can store
 // session data here that does not need to be persisted across
 // multiple sessions. Persisted data will need to be stored in IndexedDB
-export default new Vuex.Store({
+const app = {
   state: {
-    encryptionKey: null,
+    dark: true,
     isOnline: true,
-    isLoggedIn: false,
-    user: {
-      Id: null,
-      UserName: "night5415",
-      PassWord: "11111111",
-      Pin: null,
-      hash: null,
-      location: {}
-    },
-    settings: {
-      theme: {
-        light: false,
-        dark: true,
-        pathfinder: false
-      }
-    }
-  },
-  getters: {
-    User: state => {
-      return state.user;
-    },
-    Key: state => {
-      return state.encryptionKey;
-    },
-    Dark: state => {
-      return state.settings.theme.dark;
-    }
+    isLoggedIn: false
   },
   mutations: {
-    _updateEncryptionKey(state, val) {
-      state.encryptionKey = val;
+    _updateLogin(state, val) {
+      state.isLoggedIn = val;
     },
     _updateIsOnline(state, val) {
       state.isOnline = val;
     },
-    _updatePin(state, val) {
-      state.user.Pin = val;
-    },
-    _updateUserName(state, val) {
-      state.user.UserName = val;
-    },
-    _updateUserId(state, val) {
-      state.user.Id = val;
-    },
-    _updatePassWord(state, val) {
-      state.user.PassWord = val;
-    },
-    _updateLogin(state, val) {
-      state.isLoggedIn = val;
-    },
-    _updateLocation(state, val) {
-      state.user.location = val;
-    },
-    _resetState(state, val) {
-      state.isLoggedIn = false;
-      state.user.Id = val;
-      state.user.UserName = val;
-      state.encryptionKey = val;
-      state.user.Pin = val;
-      state.user.PassWord = val;
-    },
     _updateDark(state, val) {
-      state.settings.theme.dark = val;
+      state.dark = val;
     }
   },
-  //put asynchronous code here, not in mutations
-  actions: {
-    updateEncryptionKey: (context, value) => {
-      context.commit("_updateEncryptionKey", value);
+  getters: {
+    Dark: state => {
+      return state.dark;
     },
+    isOnline: state => {
+      return state.isOnline;
+    },
+    isLoggedIn: state => {
+      return state.isLoggedIn;
+    }
+  },
+  actions: {
     updateIsOnline: (context, value) => {
       context.commit("_updateIsOnline", value);
     },
-    updatePin: (context, value) => {
-      context.commit("_updatePin", value);
+    updateLogin: (context, value) => {
+      context.commit("_updateLogin", value);
     },
+    updateDark: (context, value) => {
+      context.commit("_updateDark", value);
+    }
+  }
+};
+const security = {
+  state: { token: null, encryptionKey: null, },
+  mutations: {
+    _updateSecurityToken(state, val) {
+      state.token = val;
+    },
+    _updateEncryptionKey(state, val) {
+      state.encryptionKey = val;
+    },
+  },
+  actions: {
+    updateSecurityToken: (context, value) => {
+      context.commit("_updateSecurityToken", value);
+    },
+    updateEncryptionKey: (context, value) => {
+      context.commit("_updateEncryptionKey", value);
+    },
+  },
+  getters: {
+    Token: state => {
+      return state.token;
+    },
+    Key: state => {
+      return state.encryptionKey;
+    },
+  }
+};
+const user = {
+  state: {
+    Id: null,
+    UserName: "night5415",
+    PassWord: "11111111",
+    Pin: null,
+    hash: null,
+    location: {}
+  },
+  getters: {
+    User: state => {
+      return state.user;
+    }
+  },
+  mutations: {
+    _updatePin(state, val) {
+      state.Pin = val;
+    },
+    _updateUserName(state, val) {
+      state.UserName = val;
+    },
+    _updateUserId(state, val) {
+      state.Id = val;
+    },
+    _updatePassWord(state, val) {
+      state.PassWord = val;
+    },
+    _updateLocation(state, val) {
+      state.location = val;
+    },
+  },
+  actions: {
     updateUserId: (context, value) => {
       context.commit("_updateUserId", value);
     },
@@ -95,17 +114,33 @@ export default new Vuex.Store({
     updatePassWord: (context, value) => {
       context.commit("_updatePassWord", value);
     },
-    updateLogin: (context, value) => {
-      context.commit("_updateLogin", value);
-    },
     updateLocation: (context, value) => {
       context.commit("_updateLocation", value);
     },
+    updatePin: (context, value) => {
+      context.commit("_updatePin", value);
+    }
+  }
+};
+export default new Vuex.Store({
+  modules: {
+    app: app,
+    security: security,
+    user: user
+  },
+  //mutations are synchronous
+  mutations: {
+    _resetState(state, val) {
+      this.dispatch('updateLogin', false);
+      this.dispatch('updateUserId', null);
+      this.dispatch('updateUserName', null);
+      this.dispatch('updatePassWord', null);
+    },
+  },
+  //actions are asynchronous
+  actions: {
     resetState: (context, value) => {
       context.commit("_resetState", null);
-    },
-    updateDark: (context, value) => {
-      context.commit("_updateDark", value);
     }
   }
 });

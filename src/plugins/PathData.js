@@ -1,10 +1,13 @@
+import { toJson } from "really-relaxed-json";
+import axios from 'axios';
 import pathConst from '@/statics/pathConstants';
+import store from "@/pathStore";
 // This is a central location where we can perform CRUD operations on IndexedDB
 // that can be accessed app wide instead of having it sprinkled throughout the code
 // base.
 
 const PathData = {
-    install(Vue) {
+    install(Vue, baseUrl) {
         Vue.prototype.$pathData = {
             session: {
 
@@ -100,6 +103,46 @@ const PathData = {
 
                         locaitonObjectStore.add(locationData);
                     }
+                }
+            },
+            participant: {
+                participantApi: `${baseUrl}/scout/~api/participant`,
+                getRemote: function () {
+                    var self = this,
+                        param = {
+                            params: {
+                                securityToken: store.security.getters.Token,
+                                page: 1,
+                                start: 0,
+                                limit: -1
+                            }
+                        };
+                    axios.get(self.participantApi, param)
+                        .then(function (response) {
+                            if (response.data) {
+                                //const participantInfo = toJson(response.data);
+                                //participants = JSON.parse(participantInfo);
+
+                                var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
+                                request.onsuccess = event => {
+                                    const db = event.target.result,
+                                        tx = db.transaction(pathConst.dataStore.participant, pathConst.readwrite);
+
+
+                                    response.data.data.forEach((participant) => {
+                                        let request = tx.objectStore(pathConst.dataStore.participant).add(participant);
+                                        tx.add(participant);
+                                    });
+                                }
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                },
+                getLocal: function () {
+
                 }
             }
         };

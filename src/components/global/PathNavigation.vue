@@ -115,7 +115,7 @@ export default {
     //this will hide stuff prior to log in
     notLoggedInYet: {
       get() {
-        return !this.$store.state.isLoggedIn;
+        return !this.$store.state.app.isLoggedIn;
       }
     }
   }

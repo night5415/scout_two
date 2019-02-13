@@ -16,7 +16,7 @@ import PathLocation from '@/plugins/PathLocation.js';
 import PathData from '@/plugins/PathData.js'
 Vue.use(PathUtil, getBaseUrl());
 Vue.use(PathLocation);
-Vue.use(PathData);
+Vue.use(PathData, getBaseUrl());
 Vue.use(pathConst);
 //custom plugin
 
@@ -55,20 +55,22 @@ Vue.config.warnHandler = function (msg, vm, trace) {
  * https://router.vuejs.org/api/#router-beforeresolve
  */
 router.beforeResolve((to, from, next) => {
+  var self = this;
   if (to.name === 'login')
     next();
   //if not logged in, go to login screen 
-  if (!window.pathVue || !window.pathVue.$store.state.isLoggedIn)
+  if (!window.pathVue || !window.pathVue.$store.getters.isLoggedIn) {
     next('/');
-
-  // permissions are implemented on the router, we will need
-  // to setup a mechanism for checking if the user has a specific
-  // permission to continue
-  if (to.meta.requiresAuth) {
-    const promptValue = window.prompt('Do you have permission to continue?');
-    next(parseInt(promptValue) === to.meta.authValue)
   } else {
-    next();
+    // permissions are implemented on the router, we will need
+    // to setup a mechanism for checking if the user has a specific
+    // permission to continue
+    if (to.meta.requiresAuth) {
+      const promptValue = window.prompt('Do you have permission to continue?');
+      next(parseInt(promptValue) === to.meta.authValue)
+    } else {
+      next();
+    }
   }
 });
 

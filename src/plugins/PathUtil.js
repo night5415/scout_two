@@ -8,7 +8,6 @@ const PathUtil = {
     install(Vue, baseUrl) {
         Vue.prototype.$pathUtil = {
             api: `${baseUrl}/~api/login`,
-            //api: "https://test-lighthouse.abpathfinder.net/~api/login", //TODO: this will need to be calculated in the future
             /**
              * this creates the local DB's in indexed db
              */
@@ -29,6 +28,7 @@ const PathUtil = {
                     db.createObjectStore(pathConst.dataStore.sessionData, { keyPath: "Id" });
                     db.createObjectStore(pathConst.dataStore.error, { keyPath: "Date" });
                     db.createObjectStore(pathConst.dataStore.location, { keyPath: "Date" });
+                    db.createObjectStore(pathConst.dataStore.participant, { keyPath: "Id" });
                 };
             },
             /**
@@ -41,16 +41,11 @@ const PathUtil = {
                 }
                 return _p8() + _p8(true) + _p8(true) + _p8();
             },
-            /**
-             * Initial login into the site, this will create our session
-             * and save off the users info into indexeddb. 
-             * @param {string} userName - The users User Name.
-             * @param {string} passWord - The users Password.
-             */
             Login: function (userName, passWord, pin) {
                 var self = this,
                     formData = new FormData(),
-                    deviceId = self.GenerateGuid();
+                    deviceId = self.GenerateGuid(),
+                    str = store;
 
                 formData.append("loginUserName", userName);
                 formData.append("loginPassword", passWord);
@@ -79,6 +74,7 @@ const PathUtil = {
                                     "PayrollEnabled": loginJson.data.scoutInfo.payrollEnabled,
                                     "EmpIsAvailableToSchedule": loginJson.data.scoutInfo.empIsAvailableToSchedule
                                 };
+                            str.dispatch('updateSecurityToken', loginJson.data.securityToken)
                             var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
                             request.onsuccess = event => {
                                 const db = event.target.result,
@@ -99,6 +95,53 @@ const PathUtil = {
                             return person;
                         }
                     });
+            },
+            /**
+             * Initial login into the site, this will create our session
+             * and save off the users info into indexeddb. 
+             * @param {string} userName - The users User Name.
+             * @param {string} passWord - The users Password.
+             */
+            LoginAsync: async function (userName, passWord, pin) {
+                var self = this,
+                    formData = new FormData(),
+                    deviceId = self.GenerateGuid(),
+                    str = store;
+
+                formData.append("loginUserName", userName);
+                formData.append("loginPassword", passWord);
+                formData.append("timeZone", "America/Chicago"); // will need to figure this out
+                formData.append("subMode", "mobile");
+                formData.append("deviceId", deviceId);
+
+                const response = await axios.post(self.api, formData);
+                if (response.data) {
+                    const loginInfo = toJson(response.data), loginJson = JSON.parse(loginInfo), context = loginJson.data.SecurityContext, person = context.Person, customer = context.Customer, account = context.Account, sessionData = {
+                        "Id": deviceId,
+                        "UserName": userName,
+                        "PassWord": passWord,
+                        "Pin": pin,
+                        "SessionId": context.SessionIdentifier.Id,
+                        "SupportsClinical": context.SupportsClinical,
+                        "SupportsPayroll": context.SupportsPayroll,
+                        "SupportsPracticeManagement": context.SupportsPracticeManagement,
+                        "PayrollEnabled": loginJson.data.scoutInfo.payrollEnabled,
+                        "EmpIsAvailableToSchedule": loginJson.data.scoutInfo.empIsAvailableToSchedule
+                    };
+                    var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
+                    request.onsuccess = event => {
+                        const db = event.target.result, personObjectStore = db.transaction(pathConst.dataStore.person, pathConst.readwrite)
+                            .objectStore(pathConst.dataStore.person), customerObjectStore = db.transaction(pathConst.dataStore.customer, pathConst.readwrite)
+                                .objectStore(pathConst.dataStore.customer), accountObjStore = db.transaction(pathConst.dataStore.account, pathConst.readwrite)
+                                    .objectStore(pathConst.dataStore.account), sessionDataObjStore = db.transaction(pathConst.dataStore.sessionData, pathConst.readwrite)
+                                        .objectStore(pathConst.dataStore.sessionData);
+                        customerObjectStore.add(customer);
+                        personObjectStore.add(person);
+                        accountObjStore.add(account);
+                        sessionDataObjStore.add(sessionData);
+                    };
+                    return person;
+                }
             },
             /**
              * 

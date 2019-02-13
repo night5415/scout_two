@@ -75,8 +75,8 @@ export default {
       self.$pathUtil
         .Login(self.username, self.password)
         .then(returnValue => {
-          self.$router.push("/home");
           self.$store.dispatch("updateLogin", true);
+          self.$router.push("/home");
           return self.$store.dispatch("updateUserId", returnValue.Id);
         })
         .then(a => {

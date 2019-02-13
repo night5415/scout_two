@@ -36,7 +36,7 @@ export default {
   mounted: function() {
     var self = this,
       user = self.$store.getters.User;
-
+    debugger;
     self.$pathData.person
       .GetById(user.Id)
       .then(result => {
