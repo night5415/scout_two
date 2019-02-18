@@ -10,8 +10,11 @@
   "dependencies": {
     "axios": "^0.18.0",
     "pathfinder-guid": "^1.0.4",
+    "pouchdb-browser": "^7.0.0",
+    "pouchdb-find": "^7.0.0",
     "really-relaxed-json": "^0.2.24",
     "register-service-worker": "^1.5.2",
+    "simple-crypto-js": "^2.0.2",
     "vue": "^2.5.21",
     "vue-axios": "^2.1.4",
     "vue-moment": "^4.0.0",

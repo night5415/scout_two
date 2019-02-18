@@ -2,10 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
-
-// this is the single source of truth for the app,  we can store
-// session data here that does not need to be persisted across
-// multiple sessions. Persisted data will need to be stored in IndexedDB
+// app specific state goes here
 const app = {
   state: {
     dark: true,
@@ -46,6 +43,7 @@ const app = {
     }
   }
 };
+//security specific state should go here
 const security = {
   state: { token: null, encryptionKey: null, },
   mutations: {
@@ -73,6 +71,7 @@ const security = {
     },
   }
 };
+//state dealing with the logged in user goes here
 const user = {
   state: {
     Id: null,
@@ -122,11 +121,35 @@ const user = {
     }
   }
 };
+const list = {
+  state: {
+    participantList: []
+  },
+  getters: {
+    ParticipantList: function (state) {
+      return state.participantList;
+    }
+  },
+  mutations: {
+    _updateParticipantList(state, val) {
+      state.participantList.push(val);
+    }
+  },
+  actions: {
+    updateParticipantList: (context, value) => {
+      context.commit("_updateParticipantList", value);
+    }
+  }
+}
+// this is the single source of truth for the app,  we can store
+// session data here that does not need to be persisted across
+// multiple sessions. Persisted data will need to be stored in IndexedDB
 export default new Vuex.Store({
   modules: {
     app: app,
     security: security,
-    user: user
+    user: user,
+    list: list
   },
   //mutations are synchronous
   mutations: {

@@ -4,11 +4,15 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./pathStore";
 import "./registerServiceWorker";
-import axios from 'axios';
+import Axios from 'axios';
 import VueAxios from 'vue-axios';
 import VueMoment from 'vue-moment';
-import pathConst from '@/statics/pathConstants';
+import PathConst from '@/statics/pathConstants';
+import PathDb from '@/plugins/PathDb';
 import VueSignaturePad from 'vue-signature-pad';
+//testing web workers
+//import workie from '@/workers/poster_child';
+//testing web workers
 
 //custom plugin
 import PathUtil from '@/plugins/PathUtil.js';
@@ -17,11 +21,12 @@ import PathData from '@/plugins/PathData.js'
 Vue.use(PathUtil, getBaseUrl());
 Vue.use(PathLocation);
 Vue.use(PathData, getBaseUrl());
-Vue.use(pathConst);
-//custom plugin
+Vue.use(PathConst);
+Vue.use(PathDb, PathConst);
+//custom plugin 
 
 Vue.use(VueSignaturePad);
-Vue.use(VueAxios, axios);
+Vue.use(VueAxios, Axios);
 Vue.use(VueMoment);
 Vue.config.productionTip = false;
 //this is going to need some work 
@@ -80,15 +85,26 @@ window.pathVue = new Vue({
   render: h => h(App),
   data: {
     version: 1,
-    pathConst: pathConst
+    pathConst: PathConst
   },
   created: function () {
     console.log(`Data Collector version ${this.version}`);
-    this.$pathUtil.CreateDatabase(this.pathConst);
+    this.$pathUtil.CreateDatabase(this.PathConst);
   }
 }).$mount("#app");
-
+/**
+ * This gets the base url for all API calls, for now
+ * localhost is hitting test... Chrome has a CORS issue
+ * that's hard to get around with different hosts not HTTPS.
+ * If you need to hit a local DB, I've had success using ngrok
+ * https://ngrok.com/
+ */
 function getBaseUrl() {
-  //return window.location.host
+  // let hostName = window.location.hostname,
+  //   local = 'test-lighthouse.abpathfinder.net';
+
+  // return hostName === 'localhost' ?
+  //   local :
+  //   window.location.host;
   return "https://test-lighthouse.abpathfinder.net";
 }

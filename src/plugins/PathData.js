@@ -111,35 +111,14 @@ const PathData = {
                     var self = this,
                         param = {
                             params: {
-                                securityToken: store.security.getters.Token,
+                                securityToken: store.getters.Token,
                                 page: 1,
                                 start: 0,
                                 limit: -1
                             }
                         };
-                    axios.get(self.participantApi, param)
-                        .then(function (response) {
-                            if (response.data) {
-                                //const participantInfo = toJson(response.data);
-                                //participants = JSON.parse(participantInfo);
 
-                                var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
-                                request.onsuccess = event => {
-                                    const db = event.target.result,
-                                        tx = db.transaction(pathConst.dataStore.participant, pathConst.readwrite);
-
-
-                                    response.data.data.forEach((participant) => {
-                                        let request = tx.objectStore(pathConst.dataStore.participant).add(participant);
-                                        tx.add(participant);
-                                    });
-                                }
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-
+                    return axios.get(self.participantApi, param);
                 },
                 getLocal: function () {
 

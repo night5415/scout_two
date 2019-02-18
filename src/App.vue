@@ -6,7 +6,7 @@
       <router-view></router-view>
     </transition>
     <v-avatar color="transparent" class="fixed-logo">
-      <v-img src="/img/icons/apple-touch-icon-180x180.png " contain height="90"></v-img>
+      <v-img src="/img/icons/apple-touch-icon-180x180.png" contain height="90"></v-img>
     </v-avatar>
   </v-app>
 </template> 

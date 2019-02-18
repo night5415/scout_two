@@ -29,7 +29,7 @@
 
 <script>
 import { toJson } from "really-relaxed-json";
-import security from "@/plugins/PathSecurity";
+import security from "@/custom_modules/PathSecurity";
 export default {
   name: "PathAuthenticate",
   computed: {
@@ -82,22 +82,34 @@ export default {
         .then(a => {
           return security.generateKey(self.username, self.password);
         })
-        .then(key => {
-          return self.$store.dispatch("updateEncryptionKey", key);
-        })
-        .then(d => {
-          return self.$pathLocation.HasGeoLocationEnabled();
-        })
-        .then(hasGeo => {
-          if (hasGeo) {
-            return self.$pathLocation.GetCurrentPosition();
-          } else {
-            return {};
-          }
-        })
-        .then(location => {
-          self.$store.dispatch("updateLocation", location);
-          self.$pathData.location.Save(location);
+        // .then(key => {
+        //   return self.$store.dispatch("updateEncryptionKey", key);
+        // })
+        // .then(d => {
+        //   return self.$pathLocation.HasGeoLocationEnabled();
+        // })
+        // .then(hasGeo => {
+        //   if (hasGeo) {
+        //     return self.$pathLocation.GetCurrentPosition();
+        //   } else {
+        //     return {};
+        //   }
+        // })
+        // .then(location => {
+        //   self.$store.dispatch("updateLocation", location);
+        //   self.$pathData.location.Save(location);
+        //   return Promise.resolve(true);
+        // })
+        .then(() => {
+          //start a spinner??
+          self.$pathUtil
+            .loadVuex()
+            .then(v => {
+              //stop the spinner??
+            })
+            .catch(e => {
+              //crap, stuff broke!
+            });
         })
         .catch(err => {
           self.$pathData.error.Save(err);

@@ -8,10 +8,7 @@
       <v-card-actions>
         <v-list-tile class="grow">
           <v-list-tile-avatar color="grey darken-3">
-            <v-img
-              class="elevation-6"
-              src="https://test-lighthouse.abpathfinder.net/Pathfinder/resources/images/phoebe_taylor.png"
-            ></v-img>
+            <v-img class="elevation-6" src="/img/phoebe_taylor.png "></v-img>
           </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>Pheobe Taylor</v-list-tile-title>

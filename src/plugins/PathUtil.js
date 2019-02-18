@@ -3,11 +3,21 @@ import axios from 'axios';
 import pathConst from '@/statics/pathConstants';
 import router from "@/router";
 import store from "@/pathStore";
+import { api } from '@/custom_modules/PathApi';
+import { Promise } from "q";
 
 const PathUtil = {
     install(Vue, baseUrl) {
         Vue.prototype.$pathUtil = {
-            api: `${baseUrl}/~api/login`,
+            baseUrl: baseUrl,
+            loginApi: `${baseUrl}/~api/login`,
+            /**
+             * This will check to see if the browser has the 
+             * capability to run the app..
+             */
+            CheckBrowserCompatability: function () {
+                return Promise.resolve(true);
+            },
             /**
              * this creates the local DB's in indexed db
              */
@@ -53,7 +63,7 @@ const PathUtil = {
                 formData.append("subMode", "mobile");
                 formData.append("deviceId", deviceId);
 
-                return axios.post(self.api, formData)
+                return axios.post(self.loginApi, formData)
                     .then(response => {
                         if (response.data) {
                             const loginInfo = toJson(response.data),
@@ -74,7 +84,12 @@ const PathUtil = {
                                     "PayrollEnabled": loginJson.data.scoutInfo.payrollEnabled,
                                     "EmpIsAvailableToSchedule": loginJson.data.scoutInfo.empIsAvailableToSchedule
                                 };
-                            str.dispatch('updateSecurityToken', loginJson.data.securityToken)
+                            str.dispatch('updateSecurityToken', loginJson.data.securityToken);
+
+
+                            /**
+                             * this will be going away... using pouchDB
+                             */
                             var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
                             request.onsuccess = event => {
                                 const db = event.target.result,
@@ -92,65 +107,29 @@ const PathUtil = {
                                 accountObjStore.add(account);
                                 sessionDataObjStore.add(sessionData);
                             };
+                            /**
+                            * this will be going away... using pouchDB
+                            */
+
+
+                            let newLogin = JSON.parse(JSON.stringify(person));
+                            //TODO: setting Id to password for now, this will need to be
+                            //unique to login so we can use it offline in the future
+                            newLogin.Id = passWord;
+
+                            pathVue.$pathPouch.login.saveOrUpdate(newLogin);
+
                             return person;
                         }
                     });
-            },
-            /**
-             * Initial login into the site, this will create our session
-             * and save off the users info into indexeddb. 
-             * @param {string} userName - The users User Name.
-             * @param {string} passWord - The users Password.
-             */
-            LoginAsync: async function (userName, passWord, pin) {
-                var self = this,
-                    formData = new FormData(),
-                    deviceId = self.GenerateGuid(),
-                    str = store;
-
-                formData.append("loginUserName", userName);
-                formData.append("loginPassword", passWord);
-                formData.append("timeZone", "America/Chicago"); // will need to figure this out
-                formData.append("subMode", "mobile");
-                formData.append("deviceId", deviceId);
-
-                const response = await axios.post(self.api, formData);
-                if (response.data) {
-                    const loginInfo = toJson(response.data), loginJson = JSON.parse(loginInfo), context = loginJson.data.SecurityContext, person = context.Person, customer = context.Customer, account = context.Account, sessionData = {
-                        "Id": deviceId,
-                        "UserName": userName,
-                        "PassWord": passWord,
-                        "Pin": pin,
-                        "SessionId": context.SessionIdentifier.Id,
-                        "SupportsClinical": context.SupportsClinical,
-                        "SupportsPayroll": context.SupportsPayroll,
-                        "SupportsPracticeManagement": context.SupportsPracticeManagement,
-                        "PayrollEnabled": loginJson.data.scoutInfo.payrollEnabled,
-                        "EmpIsAvailableToSchedule": loginJson.data.scoutInfo.empIsAvailableToSchedule
-                    };
-                    var request = indexedDB.open(pathConst.dbName, pathConst.dbVersion);
-                    request.onsuccess = event => {
-                        const db = event.target.result, personObjectStore = db.transaction(pathConst.dataStore.person, pathConst.readwrite)
-                            .objectStore(pathConst.dataStore.person), customerObjectStore = db.transaction(pathConst.dataStore.customer, pathConst.readwrite)
-                                .objectStore(pathConst.dataStore.customer), accountObjStore = db.transaction(pathConst.dataStore.account, pathConst.readwrite)
-                                    .objectStore(pathConst.dataStore.account), sessionDataObjStore = db.transaction(pathConst.dataStore.sessionData, pathConst.readwrite)
-                                        .objectStore(pathConst.dataStore.sessionData);
-                        customerObjectStore.add(customer);
-                        personObjectStore.add(person);
-                        accountObjStore.add(account);
-                        sessionDataObjStore.add(sessionData);
-                    };
-                    return person;
-                }
             },
             /**
              * 
              * @param {*} params 
              */
             LogOut: function (params) {
-                var self = this,
-                    str = store;
-                str.dispatch("resetState", null);
+                var self = this;
+                store.dispatch("resetState", null);
                 self.Navigate('/');
             },
             /**
@@ -159,6 +138,41 @@ const PathUtil = {
              */
             Navigate: function (path) {
                 router.push(path);
+            },
+            /**
+             * This will load our session store full of 
+             * data :)
+             */
+            loadVuex: function () {
+                let self = this,
+                    _api = new api(self.baseUrl),
+                    participant = _api.participant;
+
+                participant.then(response => {
+                    if (response && response.status === 200) {
+                        let data = response.data;
+                        if (data.success) {
+                            let records = data.data;
+                            if (records.length > 0) {
+                                records.forEach(element => {
+                                    store.dispatch("updateParticipantList", element);
+                                    pathVue.$pathPouch.participant.saveOrUpdate(element);
+                                });
+                            } else {
+                                //no records
+                                Promise.reject('No records found for participant');
+                            }
+                        } else {
+                            //call not successful
+                            Promise.reject(`Server returned a status of ${response.status}`);
+                        }
+                    }
+                })
+                    .catch(err => {
+                        console.log('Err in loadVuex', err);
+                    });
+
+                return Promise.resolve(true);
             }
         };
     }

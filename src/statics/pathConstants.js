@@ -1,13 +1,15 @@
 var pathConst = {
-    "dbName": "ScoutDb",
-    "dbVersion": 4,
+    "dbName": "ScoutDb", // deprecated
+    "dbVersion": 4,     // deprecated
     "readwrite": "readwrite",
     "dataStore": {
-        "person": "person",
+        "login": 'login',
+        "participant": "participant",
+        "person": "person", // deprecated
         "customer": "customer",
         "account": "account",
         "sessionData": "sessionData",
-        "error": "error",
+        "exceptions": "exceptions",
         "location": "location",
         "participant": "participant"
     },
