@@ -47,7 +47,7 @@ export default {
       var par = await pathVue.$pathPouch.participant.getById(
         "a60716c4-01de-400f-b8c8-c94f38fc87c5"
       );
-      console.log("participant", par);
+      //console.log("participant", par);
     },
     test(item) {},
     save(item) {}
