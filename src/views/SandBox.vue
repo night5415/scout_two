@@ -3,8 +3,7 @@
     <v-container fluid fill-height>
       <v-layout>
         <v-flex>
-          <v-btn round color="primary" dark @click="getParticipants">Get Participants</v-btn>
-          <v-btn round color="primary" dark @click="test">Save to Vuex</v-btn>
+          <v-btn round color="primary" dark @click="getParticipant">Get Participants By Id</v-btn>
           <v-data-table :headers="headers" :items="participants" class="elevation-1">
             <template slot="items" slot-scope="props">
               <tr @click="save(props.item)">
@@ -23,6 +22,7 @@
 </template> 
 <script>
 import data from "@/plugins/PathData";
+import { async } from "q";
 export default {
   data() {
     return {
@@ -43,40 +43,14 @@ export default {
     }
   },
   methods: {
-    getParticipants() {
-      // var self = this;
-      // self.$pathData.participant.getRemote().then(result => {
-      //   var patients = result.data.data;
-      //   self.$data.participants = patients;
-      //   self.$pathPouch.participant
-      //     .bulkSave(patients)
-      //     .then(records => {
-      //       console.log(records);
-      //     })
-      //     .catch(e => {
-      //       console.log("Error in Sandbox..", e);
-      //     });
-      // });
+    async getParticipant() {
+      var par = await pathVue.$pathPouch.participant.getById(
+        "a60716c4-01de-400f-b8c8-c94f38fc87c5"
+      );
+      console.log("participant", par);
     },
-    test(item) {
-      // var self = this;
-      // self.$pathPouch.participant.getAll().then(docs => {
-      //   docs.rows.forEach(element => {
-      //     this.$store.dispatch("updateParticipantList", element.doc);
-      //   });
-      // });
-    },
-    save(item) {
-      // item.FirstName = "booger";
-      // self.$pathPouch.participant
-      //   .save(item)
-      //   .then(o => {
-      //     debugger;
-      //   })
-      //   .catch(err => {
-      //     debugger;
-      //   });
-    }
+    test(item) {},
+    save(item) {}
   }
 };
 </script>

@@ -10,9 +10,6 @@ import VueMoment from 'vue-moment';
 import PathConst from '@/statics/pathConstants';
 import PathDb from '@/plugins/PathDb';
 import VueSignaturePad from 'vue-signature-pad';
-//testing web workers
-//import workie from '@/workers/poster_child';
-//testing web workers
 
 //custom plugin
 import PathUtil from '@/plugins/PathUtil.js';
@@ -51,6 +48,7 @@ window.onerror = function (messageOrEvent, source, lineno, colno, error) {
 Vue.config.errorHandler = (error, vm, info) => {
   vm.$pathData.error.Save(error);
 };
+
 Vue.config.warnHandler = function (msg, vm, trace) {
   vm.$pathData.error.Save({ "message": msg, "stack": trace });
 }
@@ -93,18 +91,16 @@ window.pathVue = new Vue({
   }
 }).$mount("#app");
 /**
- * This gets the base url for all API calls, for now
- * localhost is hitting test... Chrome has a CORS issue
- * that's hard to get around with different hosts not HTTPS.
- * If you need to hit a local DB, I've had success using ngrok
- * https://ngrok.com/
+ * This gets the base url for all API calls, we will use
+ * :9013 for localhost, in the CLI set the VUE project to run
+ * in HTTPS. The browser will complain about the site being unsafe
+ * but we know better :)
  */
 function getBaseUrl() {
-  // let hostName = window.location.hostname,
-  //   local = 'test-lighthouse.abpathfinder.net';
+  let hostName = window.location.hostname,
+    local = 'http://localhost:9013';
 
-  // return hostName === 'localhost' ?
-  //   local :
-  //   window.location.host;
-  return "https://test-lighthouse.abpathfinder.net";
+  return hostName === 'localhost' ?
+    local :
+    window.location.host;
 }

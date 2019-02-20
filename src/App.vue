@@ -1,5 +1,5 @@
 <template>
-  <v-app :dark="goDark">
+  <v-app :dark="darkTheme">
     <PathNavigation/>
     <PathConfirm ref="pathConfirm"/>
     <transition name="fade" mode="out-in">
@@ -17,9 +17,10 @@ export default {
   name: "App",
   components: { PathNavigation, PathConfirm },
   mounted() {
-    window.addEventListener("online", this.updateOnlineStatus);
-    window.addEventListener("offline", this.updateOnlineStatus);
-    this.$root.$confirm = this.$refs.pathConfirm;
+    let self = this;
+    window.addEventListener("online", self.updateOnlineStatus);
+    window.addEventListener("offline", self.updateOnlineStatus);
+    self.$root.$confirm = self.$refs.pathConfirm;
   },
   beforeDestroy() {
     window.removeEventListener("online", this.updateOnlineStatus);
@@ -35,9 +36,10 @@ export default {
     return {};
   },
   computed: {
-    goDark: {
+    darkTheme: {
       get() {
-        return this.$store.getters.Dark;
+        var self = this;
+        return self.$store.getters.Dark;
       }
     }
   }

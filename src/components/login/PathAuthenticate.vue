@@ -28,8 +28,7 @@
 </template>
 
 <script>
-import { toJson } from "really-relaxed-json";
-import security from "@/custom_modules/PathSecurity";
+import { toJson } from "really-relaxed-json"; 
 export default {
   name: "PathAuthenticate",
   computed: {
@@ -72,71 +71,73 @@ export default {
       var self = this;
       self.waiting = true;
 
-      self.$pathUtil
-        .Login(self.username, self.password)
-        .then(returnValue => {
-          self.$store.dispatch("updateLogin", true);
-          self.$router.push("/home");
-          return self.$store.dispatch("updateUserId", returnValue.Id);
+       self.$pathUtil
+        .generateKey(self.username, self.password)
+        .then(key => {
+          pathVue.$pathPouch.setEncryptionKey(key);
+          return self.$store.dispatch("updateEncryptionKey", key);
         })
-        .then(a => {
-          return security.generateKey(self.username, self.password);
-        })
-        // .then(key => {
-        //   return self.$store.dispatch("updateEncryptionKey", key);
-        // })
-        // .then(d => {
-        //   return self.$pathLocation.HasGeoLocationEnabled();
-        // })
-        // .then(hasGeo => {
-        //   if (hasGeo) {
-        //     return self.$pathLocation.GetCurrentPosition();
-        //   } else {
-        //     return {};
-        //   }
-        // })
-        // .then(location => {
-        //   self.$store.dispatch("updateLocation", location);
-        //   self.$pathData.location.Save(location);
-        //   return Promise.resolve(true);
-        // })
-        .then(() => {
-          //start a spinner??
+        .then(key => {
           self.$pathUtil
-            .loadVuex()
-            .then(v => {
-              //stop the spinner??
+            .Login(self.username, self.password)
+            .then(returnValue => {
+              self.$store.dispatch("updateLogin", true);
+              self.$router.push("/home");
+              return self.$store.dispatch("updateUserId", returnValue.Id);
             })
-            .catch(e => {
-              //crap, stuff broke!
+            .then(d => {
+              return self.$pathLocation.HasGeoLocationEnabled();
+            })
+            .then(hasGeo => {
+              if (hasGeo) {
+                return self.$pathLocation.GetCurrentPosition();
+              } else {
+                return {};
+              }
+            })
+            .then(location => {
+              self.$store.dispatch("updateLocation", location);
+              self.$pathData.location.Save(location);
+              return Promise.resolve(true);
+            })
+            .then(() => {
+              //start a spinner??
+              self.$pathUtil
+                .loadVuex()
+                .then(v => {
+                  //stop the spinner??
+                })
+                .catch(e => {
+                  //crap, stuff broke!
+                });
+            })
+            .catch(err => {
+              self.$pathData.error.Save(err);
+
+              if (!err.response)
+                err.response = {
+                  status: 502
+                };
+
+              switch (err.response.status) {
+                case 502:
+                  self.snackMessage = "Unknown error";
+                  break;
+                case 401:
+                  self.snackMessage = "Username or Password is incorrect";
+                  break;
+                case 500:
+                  self.snackMessage =
+                    "Looks like the server is down, please try again later";
+                  break;
+                default:
+                  self.snackMessage = "Hmmmmm, something went wrong";
+              }
+              self.snackbar = true;
+            })
+            .finally(function() {
+              self.waiting = false;
             });
-        })
-        .catch(err => {
-          self.$pathData.error.Save(err);
-
-          if (!err.response)
-            err.response = {
-              status: 502
-            };
-
-          switch (err.response.status) {
-            case 502:
-              self.snackMessage = "Unknown error";
-              break;
-            case 401:
-              self.snackMessage = "Username or Password is incorrect";
-              break;
-            case 500:
-              self.snackMessage =
-                "Looks like the server is down, please try again later";
-              break;
-            default:
-              self.snackMessage = "Hmmmmm, something went wrong";
-          }
-          self.snackbar = true;
-        })
-        .finally(function() {
-          self.waiting = false;
         });
 
       //this will udpate location if coords change

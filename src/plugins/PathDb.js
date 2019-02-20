@@ -13,22 +13,24 @@ var pathDb = {
     pathConst: null,
     install(Vue, pathConst) {
         var self = this;
-        console.log('Installing PouchDb');
-        _crpto = new SimpleCrypto('test');//will need to seed with password
         _pathConst = pathConst;
+
         self.create();
         //this exposes functions on the $pathVue.$pathPouch
-        //object.
+        //object. 
         Vue.prototype.$pathPouch = {
+            setEncryptionKey: (seed) => {
+                _crpto = new SimpleCrypto(seed);
+            },
             login: {
                 saveOrUpdate: _loginDb.saveOrUpdate,
-                save: _loginFunc.save,
+                //save: _loginFunc.save,
                 getById: _loginFunc.getById,
                 getAll: _loginFunc.getAll
             },
             participant: {
                 saveOrUpdate: _participantDb.saveOrUpdate,
-                save: _participantFunc.save,
+                //save: _participantFunc.save,
                 //bulkSave: _participantFunc.bulkSave, //this needs work because the _id needs to be set to our Id :()
                 getByFirstName: _participantFunc.getByFirstName,
                 getById: _participantFunc.getById,

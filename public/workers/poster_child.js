@@ -8,9 +8,12 @@ onmessage = function (e) {
             break;
     }
 }
-/**
- * This adds an event that can be listened to on the main thread!!
- */
+
 function reply(listener, args) {
-    postMessage({ 'queryMethodListener': listener, 'queryMethodArguments': args });
+    const eventAwesome = new CustomEvent('awesome', {
+        bubbles: true,
+        detail: { text: 'hello', isNew: true, howMany: 15 }
+    });
+    console.log('sending awesome event!');
+    self.dispatchEvent(eventAwesome);
 }
