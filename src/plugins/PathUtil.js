@@ -1,6 +1,5 @@
 import { toJson } from "really-relaxed-json";
 import axios from "axios";
-//import { dataStore, system } from "@/statics/pathConstants";
 import router from "@/router";
 import store from "@/pathStore";
 import { api } from "@/custom_modules/PathApi";
@@ -91,44 +90,6 @@ const PathUtil = {
         router.push(path);
       },
       /**
-       * This will load our session store full of
-       * data :)
-       */
-      loadVuex: function () {
-        let self = this,
-          _api = new api(self.baseUrl),
-          participant = _api.participant;
-
-        participant
-          .then(response => {
-            if (response && response.status === 200) {
-              let data = response.data;
-              if (data.success) {
-                let records = data.data;
-                if (records.length > 0) {
-                  records.forEach(element => {
-                    store.dispatch("updateParticipantList", element);
-                    pathVue.$pathPouch.participant.saveOrUpdate(element);
-                  });
-                } else {
-                  //no records
-                  Promise.reject("No records found for participant");
-                }
-              } else {
-                //call not successful
-                Promise.reject(
-                  `Server returned a status of ${response.status}`
-                );
-              }
-            }
-          })
-          .catch(err => {
-            console.log("Err in loadVuex", err);
-          });
-
-        return Promise.resolve(true);
-      },
-      /**
        * 
        */
       generateKey: (userName, passWord) => {
@@ -185,12 +146,6 @@ const PathUtil = {
           .then(function (keyBytes) {
             return arrayBufferToHexString(keyBytes);
           });
-      },
-      /**
-       * 
-       */
-      testing: (url) => {
-        return axios.get(url);
       }
     };
   }

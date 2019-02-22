@@ -7,7 +7,8 @@ const app = {
   state: {
     dark: true,
     isOnline: true,
-    isLoggedIn: false
+    isLoggedIn: false,
+    baseUrl: ''
   },
   mutations: {
     _updateLogin(state, val) {
@@ -126,7 +127,7 @@ const list = {
     participantList: []
   },
   getters: {
-    ParticipantList: function(state) {
+    ParticipantList: function (state) {
       return state.participantList;
     }
   },

@@ -19,7 +19,7 @@ Vue.use(Router);
 // be blocked behind permission using the meta object,
 // this is checked in main.js in router.beforeResolve
 // https://router.vuejs.org/
-var pathRouter = new Router({
+const pathRouter = new Router({
   routes: [
     {
       path: route.login.path,

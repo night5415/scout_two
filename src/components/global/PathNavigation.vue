@@ -12,18 +12,6 @@
       :mini-variant.sync="mini"
       v-bind:class="{ isLoggedIn: notLoggedInYet }"
     >
-      <v-toolbar flat class="transparent" fixed>
-        <v-list class="pa-0">
-          <v-list-tile avatar>
-            <v-spacer></v-spacer>
-            <v-list-tile-action>
-              <v-btn icon @click.stop="mini = !mini" v-if="!mini">
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list>
-      </v-toolbar>
       <v-list class="pt-3">
         <v-list-tile
           v-for="link in navLinks"

@@ -158,10 +158,11 @@ var _exceptionFunc = {
     return _exceptionDb.allDocs({ include_docs: true });
   },
   save: function (ex) {
-    return _exceptionDb.put({
-      _id: ex.Id,
-      Id: ex.Id,
-      data: _crpto.encrypt(ex)
+    var today = new Date();
+    return _exceptionDb.post({
+      date: today.toLocaleDateString(),
+      time: today.toLocaleTimeString(),
+      exception: ex
     });
   },
   clear: function () { },

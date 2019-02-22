@@ -1,6 +1,6 @@
 import Vue from "vue";
 import "./plugins/vuetify";
-import material from "material-design-icons-iconfont";
+import "material-design-icons-iconfont";
 import App from "./App.vue";
 import router from "./router";
 import store from "./pathStore";
@@ -39,37 +39,17 @@ window.onerror = function (messageOrEvent, source, lineno, colno, error) {
     line: lineno,
     column: colno
   };
-
-  // var deferredPrompt;
-
-  // window.addEventListener('beforeinstallprompt', function (e) {
-  //   // Prevent Chrome 67 and earlier from automatically showing the prompt
-  //   e.preventDefault();
-  //   // Stash the event so it can be triggered later.
-  //   deferredPrompt = e;
-
-  //   deferredPrompt.prompt();
-  //   // Wait for the user to respond to the prompt
-  //   deferredPrompt.userChoice.then((choiceResult) => {
-  //     if (choiceResult.outcome === 'accepted') {
-  //       console.log('User accepted the A2HS prompt');
-  //     } else {
-  //       console.log('User dismissed the A2HS prompt');
-  //     }
-  //     deferredPrompt = null;
-  //   }); 
-  // });
-
-  //this.pathVue.$pathData.error.Save(err);
+  if (pathVue)
+    pathVue.$pathPouch.exceptions.save(error);
   return true;
 };
 
 Vue.config.errorHandler = (error, vm, info) => {
-  //vm.$pathData.error.Save(error);
+  vm.$pathPouch.exceptions.save(error);
 };
 
 Vue.config.warnHandler = function (msg, vm, trace) {
-  //vm.$pathData.error.Save({ message: msg, stack: trace });
+  vm.$pathPouch.exceptions.save({ message: msg, stack: trace });
 };
 
 // DECLARATION
@@ -91,9 +71,9 @@ window.pathVue = new Vue({
  * but we know better :)
  */
 function getBaseUrl() {
-  return "https://test-lighthouse.abpathfinder.net";
-  // let hostName = window.location.hostname,
-  //   local = "https://test-lighthouse.abpathfinder.net";
+  //return "https://test-lighthouse.abpathfinder.net";
+  let hostName = window.location.hostname,
+    local = "https://test-lighthouse.abpathfinder.net";
 
-  // return hostName === "localhost" ? local : window.location.host;
+  return hostName === "localhost" ? local : window.location.host;
 }

@@ -1,4 +1,5 @@
 import { api } from "@/custom_modules/PathApi";
+import store from "@/pathStore";
 
 const participantApi = {
     /**
@@ -8,10 +9,10 @@ const participantApi = {
     cacheFirst: (comp, dataProp) => {
         return _private.cache("participant", comp, dataProp, true)
             .then(() => {
-                return _private.service(comp, dataProp);
+                return _private.service("participant", comp, dataProp);
             })
             .catch((err) => {
-                debugger;
+                pathVue.$pathPouch.exceptions.save(err);
                 console.error('PathData', err);
             })
             .finally(() => {
@@ -48,10 +49,18 @@ const _private = {
             dataOnly = arguments[3] || false;
 
         if (!db)
-            Promise.reject('Datebase Name is required');
+            return Promise.reject({
+                'File': 'PathData.js',
+                'LN': 51,
+                'Message': 'Database Name is required'
+            });
 
         if (!comp)
-            Promise.reject("Vue component is required");
+            return Promise.reject({
+                'File': 'PathData.js',
+                'LN': 58,
+                'Message': 'Vue Component is required'
+            });
 
         comp[progress] = 10;
 
@@ -69,21 +78,42 @@ const _private = {
             })
     },
     /** 
-    *  @param {VueComponent} comp The component which the call is comming from 'This'. (required)
-    *  @param {string} [dataProp] the data property in which to place records in. (defaults to dataList)
-    *  @param {string} [progress] the data property in which to set our progress int value. (defaults to dataProgress) 
+      @param {DataBase} db What local database are we looking at? (required)
+      @param {VueComponent} comp The component which the call is comming from 'This'. (required)
+      @param {string} [dataProp] the data property in which to place records in. (defaults to dataList)
+      @param {string} [progress] the data property in which to set our progress int value. (defaults to dataProgress) 
     */
     service: function () {
-        let comp = arguments[0],
+        let db = arguments[0],
+            comp = arguments[1],
             prop = arguments[2] || 'dataList',
-            progress = arguments[4] || 'dataProgress',
-            _api = new api('https://test-lighthouse.abpathfinder.net'),
-            participant = _api.participant;
+            progress = arguments[3] || 'dataProgress',
+            _api = new api(),
+            _service;
 
         if (!comp)
-            Promise.reject('Vue Component is required');
+            return Promise.reject({
+                'File': 'PathData.js',
+                'LN': 94,
+                'Message': 'Vue Componenet is required'
+            });
 
-        return participant
+        if (!db)
+            return Promise.reject({
+                'File': 'PathData.js',
+                'LN': 101,
+                'Message': 'Database Name is required'
+            });
+
+        _service = _api[db];
+
+        if (!_service)
+            return Promise.reject({
+                'File': 'PathData.js',
+                'LN': 109,
+                'Message': `No mathcing Api for ${db}, Please add a corresponding get() to PathApi.js`
+            });
+        return _service
             .then(response => {
                 if (response && response.status === 200) {
                     let data = response.data;
@@ -96,23 +126,31 @@ const _private = {
                                     return (data && record) && (record.Id === data.Id);
                                 });
                                 if (currentRecord) {
+                                    //TODO: currentRecord = record;
                                     currentRecord.Cached = false;
                                 } else {
                                     record.Cached = false;
                                     comp[prop].push(record);
                                 }
+                                pathVue.$pathPouch[db].saveOrUpdate(record);
                             });
                             comp[progress] = 95;
-                            Promise.resolve(true);
+                            return Promise.resolve(true);
                         } else {
                             //no records
-                            Promise.reject("No records found for participant");
+                            return Promise.reject({
+                                'File': 'PathData.js',
+                                'LN': 133,
+                                'Message': 'No Records found'
+                            });
                         }
                     } else {
                         //call not successful
-                        Promise.reject(
-                            `Server returned a status of ${response.status}`
-                        );
+                        return Promise.reject({
+                            'File': 'PathData.js',
+                            'LN': 52,
+                            'Message': `Server returned a status of ${response.status}`
+                        });
                     }
                 }
             })

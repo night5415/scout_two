@@ -100,17 +100,6 @@ export default {
               //self.$pathData.location.Save(location);
               return Promise.resolve(true);
             })
-            .then(() => {
-              //start a spinner??
-              self.$pathUtil
-                .loadVuex()
-                .then(v => {
-                  //stop the spinner??
-                })
-                .catch(e => {
-                  //crap, stuff broke!
-                });
-            })
             .catch(err => {
               //self.$pathData.error.Save(err);
 

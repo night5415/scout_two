@@ -8,7 +8,7 @@ const api = class Api {
 
   get participant() {
     let self = this,
-      url = `${self.baseUrl}/scout/~api/participant`,
+      url = `${self.getBaseUrl()}/scout/~api/participant`,
       param = {
         params: {
           securityToken: store.getters.Token,
@@ -26,6 +26,13 @@ const api = class Api {
       url = ``;
 
     return "woohoo!";
+  }
+
+  getBaseUrl = () => {
+    let hostName = window.location.hostname,
+      local = "https://test-lighthouse.abpathfinder.net";
+
+    return hostName === "localhost" ? local : window.location.host;
   }
 };
 
