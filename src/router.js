@@ -12,48 +12,48 @@ import Setting from "./views/Setting.vue";
 
 import Development from "@/views/Development.vue";
 import SandBox from "@/views/SandBox.vue";
-import pathConst from '@/statics/pathConstants';
+import { route } from "@/statics/pathConstants";
 
 Vue.use(Router);
 // these routes point to areas of the app and can
 // be blocked behind permission using the meta object,
 // this is checked in main.js in router.beforeResolve
 // https://router.vuejs.org/
-export default new Router({
+var pathRouter = new Router({
   routes: [
     {
-      path: pathConst.route.login.path,
-      name: pathConst.route.login.name,
+      path: route.login.path,
+      name: route.login.name,
       component: Login
     },
     {
-      path: pathConst.route.home.path,
-      name: pathConst.route.home.name,
+      path: route.home.path,
+      name: route.home.name,
       component: Home
     },
     {
-      path: pathConst.route.myday.path,
-      name: pathConst.route.myday.name,
+      path: route.myday.path,
+      name: route.myday.name,
       component: MyDay
     },
     {
-      path: pathConst.route.patient.path,
-      name: pathConst.route.patient.name,
+      path: route.patient.path,
+      name: route.patient.name,
       component: Patient
     },
     {
-      path: pathConst.route.new.path,
-      name: pathConst.route.new.name,
+      path: route.new.path,
+      name: route.new.name,
       component: NewEvent
     },
     {
-      path: pathConst.route.offline.path,
-      name: pathConst.route.offline.name,
+      path: route.offline.path,
+      name: route.offline.name,
       component: Offline
     },
     {
-      path: pathConst.route.dev.path,
-      name: pathConst.route.dev.name,
+      path: route.dev.path,
+      name: route.dev.name,
       component: Development,
       meta: {
         requiresAuth: true,
@@ -61,21 +61,45 @@ export default new Router({
       }
     },
     {
-      path: pathConst.route.sandbox.path,
-      name: pathConst.route.sandbox.name,
+      path: route.sandbox.path,
+      name: route.sandbox.name,
       component: SandBox
     },
     {
-      path: pathConst.route.error.path,
-      name: pathConst.route.error.name,
+      path: route.error.path,
+      name: route.error.name,
       component: Error
     },
     {
-      path: pathConst.route.setting.path,
-      name: pathConst.route.setting.name,
+      path: route.setting.path,
+      name: route.setting.name,
       component: Setting
     }
   ]
 });
 
+/**
+ * this function fires before each route change, we can put custom
+ * logic to control the flow.
+ * https://router.vuejs.org/api/#router-beforeresolve
+ */
+pathRouter.beforeResolve((to, from, next) => {
+  var self = this;
+  if (to.name === "login") next();
+  //if not logged in, go to login screen
+  if (!window.pathVue || !window.pathVue.$store.getters.isLoggedIn) {
+    next("/");
+  } else {
+    // permissions are implemented on the router, we will need
+    // to setup a mechanism for checking if the user has a specific
+    // permission to continue
+    if (to.meta.requiresAuth) {
+      const promptValue = window.prompt("Do you have permission to continue?");
+      next(parseInt(promptValue) === to.meta.authValue);
+    } else {
+      next();
+    }
+  }
+});
 
+export default pathRouter;

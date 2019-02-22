@@ -33,30 +33,6 @@ This opens up a Chrome instance which interfaces with the Vue Cli to make things
 
 Another helpful tool is to install the [Vue Chrome extension](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en), this adds a tab in the Dev tool window which allows inspection of the Vue instance.
 
-```
-src
-    ├───assets
-    ├───components
-    │   ├───global
-    │   ├───login
-    │   ├───logout
-    │   ├───newEvent
-    │   ├───patient
-    │   ├───reportMyDay
-    │   ├───shared
-    │   └───workOffline
-    ├───custom_modules
-    ├───plugins
-    ├───statics
-    ├───tabs
-    │   ├───development
-    │   ├───home
-    │   ├───newEvent
-    │   ├───offline
-    │   ├───patient
-    │   ├───reportMyDay
-    │   └───shared
-    └───views
 
 
 

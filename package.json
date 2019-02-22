@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "material-design-icons-iconfont": "^4.0.5",
     "pathfinder-guid": "^1.0.4",
     "pouchdb-browser": "^7.0.0",
     "pouchdb-find": "^7.0.0",

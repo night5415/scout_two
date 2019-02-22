@@ -3,14 +3,27 @@
     <v-container fluid fill-height>
       <v-layout>
         <v-flex>
-          <v-btn round color="primary" dark @click="getParticipant">Get Participants By Id</v-btn>
-          <v-data-table :headers="headers" :items="participants" class="elevation-1">
+          <v-toolbar flat>
+            <v-btn flat icon @click="loadData">
+              <v-icon>cached</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-text-field v-model="gridSearch" append-icon="search" label="Search"></v-text-field>
+          </v-toolbar>
+          <v-data-table
+            :headers="headers"
+            :items="dataList"
+            :search="gridSearch"
+            :loading="gridLoading"
+          >
+            <v-progress-linear slot="progress" height="3" v-model="dataProgress"></v-progress-linear>
             <template slot="items" slot-scope="props">
-              <tr @click="save(props.item)">
+              <tr @click="rowClick(props.item)">
+                <td class="text-xs-right">{{ props.item.Cached }}</td>
                 <td class="text-xs-right">{{ props.item.FirstName }}</td>
                 <td class="text-xs-right">{{ props.item.LastName }}</td>
                 <td class="text-xs-right">{{ props.item.IsActive }}</td>
-                <td class="text-xs-right">{{ props.item.DOB }}</td>
+                <td class="text-xs-right">{{ props.item.DOB | formatDate }}</td>
                 <td class="text-xs-right">{{ props.item.GuardiansDisplay }}</td>
               </tr>
             </template>
@@ -21,12 +34,17 @@
   </v-content>
 </template> 
 <script>
-import data from "@/plugins/PathData";
-import { async } from "q";
+import { participantApi } from "@/custom_modules/PathData";
+import { async, Promise } from "q";
 export default {
   data() {
     return {
+      dataList: [],
+      gridSearch: "",
+      gridLoading: false,
+      dataProgress: 0,
       headers: [
+        { text: "From Cache", value: "Cached" },
         { text: "First Name", value: "FirstName" },
         { text: "Last Name", value: "LastName" },
         { text: "IsActive", value: "IsActive" },
@@ -35,22 +53,38 @@ export default {
       ]
     };
   },
-  computed: {
-    participants: {
-      get() {
-        return this.$store.state.list.participantList;
-      }
+  mounted() {
+    var self = this,
+      list = self.$data.dataList;
+    if (list && list.length === 0) {
+      self.loadData();
     }
   },
+  computed: {},
   methods: {
-    async getParticipant() {
-      var par = await pathVue.$pathPouch.participant.getById(
-        "a60716c4-01de-400f-b8c8-c94f38fc87c5"
-      );
-      //console.log("participant", par);
+    loadData() {
+      var self = this;
+      self.$data.gridLoading = true;
+      participantApi
+        .cacheFirst(self)
+        .finally(function() {
+          self.$data.dataProgress = 100;
+          setTimeout(() => {
+            self.$data.gridLoading = false;
+          }, 1000);
+        })
+        .catch(err => {});
     },
-    test(item) {},
-    save(item) {}
+    rowClick(item) {
+      var self = this;
+      console.log("Row Item", item);
+      self.$root.$confirm.open({
+        title: "Check the Console",
+        body: "Open Dev tools to see the row item",
+        accept: "Yes",
+        decline: "No"
+      });
+    }
   }
 };
 </script>

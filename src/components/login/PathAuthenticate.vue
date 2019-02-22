@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { toJson } from "really-relaxed-json"; 
+import { toJson } from "really-relaxed-json";
 export default {
   name: "PathAuthenticate",
   computed: {
@@ -71,7 +71,7 @@ export default {
       var self = this;
       self.waiting = true;
 
-       self.$pathUtil
+      self.$pathUtil
         .generateKey(self.username, self.password)
         .then(key => {
           pathVue.$pathPouch.setEncryptionKey(key);
@@ -97,7 +97,7 @@ export default {
             })
             .then(location => {
               self.$store.dispatch("updateLocation", location);
-              self.$pathData.location.Save(location);
+              //self.$pathData.location.Save(location);
               return Promise.resolve(true);
             })
             .then(() => {
@@ -112,7 +112,7 @@ export default {
                 });
             })
             .catch(err => {
-              self.$pathData.error.Save(err);
+              //self.$pathData.error.Save(err);
 
               if (!err.response)
                 err.response = {
@@ -143,7 +143,7 @@ export default {
       //this will udpate location if coords change
       self.$pathLocation.StartLocationWatch(location => {
         self.$store.dispatch("updateLocation", location);
-        pathVue.$pathData.location.Save(location);
+        //pathVue.$pathData.location.Save(location);
       });
     }
   }

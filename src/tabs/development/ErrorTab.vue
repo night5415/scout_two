@@ -33,22 +33,22 @@ export default {
     };
   },
   mounted() {
-    var self = this;
-    self.$pathData.error
-      .Get()
-      .then(records => {
-        records.forEach(err => {
-          self.desserts.push({
-            Id: err.Date, //milliseconds
-            Date: new Date(err.Date),
-            Message: err.Error.message,
-            Stack: err.Error.stack
-          });
-        });
-      })
-      .catch(err => {
-        self.$pathSaveError(err);
-      });
+    // var self = this;
+    // self.$pathData.error
+    //   .Get()
+    //   .then(records => {
+    //     records.forEach(err => {
+    //       self.desserts.push({
+    //         Id: err.Date, //milliseconds
+    //         Date: new Date(err.Date),
+    //         Message: err.Error.message,
+    //         Stack: err.Error.stack
+    //       });
+    //     });
+    //   })
+    //   .catch(err => {
+    //     self.$pathSaveError(err);
+    //   });
   },
   activated() {
     console.log("error tab is activated");

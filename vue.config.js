@@ -1,7 +1,7 @@
 module.exports = {
   pwa: {
-    name: 'Data Collector',
-    themeColor: '#000000'
+    name: "Data Collector",
+    themeColor: "#000000"
   },
 
   publicPath: undefined,
@@ -11,4 +11,4 @@ module.exports = {
   productionSourceMap: undefined,
   parallel: undefined,
   css: undefined
-}
+};

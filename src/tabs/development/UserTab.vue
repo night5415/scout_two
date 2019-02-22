@@ -34,23 +34,22 @@ export default {
     };
   },
   mounted: function() {
-    var self = this,
-      user = self.$store.getters.User;
-    debugger;
-    self.$pathData.person
-      .GetById(user.Id)
-      .then(result => {
-        if (result) {
-          self.$data.user.FirstName = result.FirstName;
-          self.$data.user.LastName = result.LastName;
-          self.$data.user.Id = result.Id;
-          self.$data.user.EmployeeNumber = result.EmployeeNumber;
-        } else {
-        }
-      })
-      .catch(err => {
-        debugger;
-      });
+    // var self = this,
+    //   user = self.$store.getters.User;
+    // self.$pathData.person
+    //   .GetById(user.Id)
+    //   .then(result => {
+    //     if (result) {
+    //       self.$data.user.FirstName = result.FirstName;
+    //       self.$data.user.LastName = result.LastName;
+    //       self.$data.user.Id = result.Id;
+    //       self.$data.user.EmployeeNumber = result.EmployeeNumber;
+    //     } else {
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log("In User Tab", err);
+    //   });
   }
 };
 </script>

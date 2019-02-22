@@ -45,14 +45,14 @@ const app = {
 };
 //security specific state should go here
 const security = {
-  state: { token: null, encryptionKey: null, },
+  state: { token: null, encryptionKey: null },
   mutations: {
     _updateSecurityToken(state, val) {
       state.token = val;
     },
     _updateEncryptionKey(state, val) {
       state.encryptionKey = val;
-    },
+    }
   },
   actions: {
     updateSecurityToken: (context, value) => {
@@ -60,7 +60,7 @@ const security = {
     },
     updateEncryptionKey: (context, value) => {
       context.commit("_updateEncryptionKey", value);
-    },
+    }
   },
   getters: {
     Token: state => {
@@ -68,7 +68,7 @@ const security = {
     },
     Key: state => {
       return state.encryptionKey;
-    },
+    }
   }
 };
 //state dealing with the logged in user goes here
@@ -101,7 +101,7 @@ const user = {
     },
     _updateLocation(state, val) {
       state.location = val;
-    },
+    }
   },
   actions: {
     updateUserId: (context, value) => {
@@ -126,7 +126,7 @@ const list = {
     participantList: []
   },
   getters: {
-    ParticipantList: function (state) {
+    ParticipantList: function(state) {
       return state.participantList;
     }
   },
@@ -140,7 +140,7 @@ const list = {
       context.commit("_updateParticipantList", value);
     }
   }
-}
+};
 // this is the single source of truth for the app,  we can store
 // session data here that does not need to be persisted across
 // multiple sessions. Persisted data will need to be stored in IndexedDB
@@ -154,11 +154,11 @@ export default new Vuex.Store({
   //mutations are synchronous
   mutations: {
     _resetState(state, val) {
-      this.dispatch('updateLogin', false);
-      this.dispatch('updateUserId', null);
-      this.dispatch('updateUserName', null);
-      this.dispatch('updatePassWord', null);
-    },
+      this.dispatch("updateLogin", false);
+      this.dispatch("updateUserId", null);
+      this.dispatch("updateUserName", null);
+      this.dispatch("updatePassWord", null);
+    }
   },
   //actions are asynchronous
   actions: {
