@@ -19,7 +19,6 @@
             <v-progress-linear slot="progress" height="3" v-model="dataProgress"></v-progress-linear>
             <template slot="items" slot-scope="props">
               <tr @click="rowClick(props.item)">
-                <td class="text-xs-right">{{ props.item.Cached }}</td>
                 <td class="text-xs-right">{{ props.item.FirstName }}</td>
                 <td class="text-xs-right">{{ props.item.LastName }}</td>
                 <td class="text-xs-right">{{ props.item.IsActive }}</td>
@@ -44,7 +43,6 @@ export default {
       gridLoading: false,
       dataProgress: 0,
       headers: [
-        { text: "From Cache", value: "Cached" },
         { text: "First Name", value: "FirstName" },
         { text: "Last Name", value: "LastName" },
         { text: "IsActive", value: "IsActive" },
@@ -75,15 +73,22 @@ export default {
         })
         .catch(err => {});
     },
-    rowClick(item) {
+    refresh() {
       var self = this;
-      console.log("Row Item", item);
+      self.$data.gridLoading = true;
+      participantApi.networkOnly().finally(() => {
+        self.$data.gridLoading = true;
+      });
+    },
+    async rowClick(item) {
+      var self = this;
       self.$root.$confirm.open({
         title: "Check the Console",
-        body: "Open Dev tools to see the row item",
-        accept: "Yes",
-        decline: "No"
+        body: "Open Dev tools to see the row item"
       });
+      var db = await self.$pathPouch.participant.getById(item.Id);
+      console.log("Row Item", item);
+      console.log("Local DB Item", db);
     }
   }
 };

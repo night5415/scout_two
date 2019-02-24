@@ -40,7 +40,7 @@ window.onerror = function (messageOrEvent, source, lineno, colno, error) {
     column: colno
   };
   if (pathVue)
-    pathVue.$pathPouch.exceptions.save(error);
+    pathVue.$pathPouch.exceptions.save(err);
   return true;
 };
 
@@ -49,7 +49,10 @@ Vue.config.errorHandler = (error, vm, info) => {
 };
 
 Vue.config.warnHandler = function (msg, vm, trace) {
-  vm.$pathPouch.exceptions.save({ message: msg, stack: trace });
+  vm.$pathPouch.exceptions.save({
+    message: msg,
+    stack: trace
+  });
 };
 
 // DECLARATION
@@ -71,9 +74,23 @@ window.pathVue = new Vue({
  * but we know better :)
  */
 function getBaseUrl() {
-  //return "https://test-lighthouse.abpathfinder.net";
   let hostName = window.location.hostname,
     local = "https://test-lighthouse.abpathfinder.net";
 
   return hostName === "localhost" ? local : window.location.host;
 }
+
+// Add some logging to Promise.Catch
+(function (Promise) {
+  var originalCatch = Promise.prototype.catch;
+  Promise.prototype.catch = function () {
+    try {
+      if (window.pathVue)
+        window.pathVue.$pathPouch.exceptions.save(arguments);
+    } catch (error) {
+      console.log(error);
+    }
+    return originalCatch.apply(this, arguments);
+  };
+
+})(this.Promise);

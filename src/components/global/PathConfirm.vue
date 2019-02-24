@@ -33,8 +33,8 @@ export default {
       if (options) {
         this.title = options.title;
         this.body = options.body;
-        this.acceptBtnText = options.accept || "Yes";
-        this.declineBtnText = options.decline || "No";
+        this.acceptBtnText = options.accept || "Ok";
+        this.declineBtnText = options.decline;
       }
 
       return new Promise((resolve, reject) => {

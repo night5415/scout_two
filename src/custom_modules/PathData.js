@@ -1,4 +1,6 @@
-import { api } from "@/custom_modules/PathApi";
+import {
+    api
+} from "@/custom_modules/PathApi";
 import store from "@/pathStore";
 
 const participantApi = {
@@ -9,21 +11,32 @@ const participantApi = {
     cacheFirst: (comp, dataProp) => {
         return _private.cache("participant", comp, dataProp, true)
             .then(() => {
-                return _private.service("participant", comp, dataProp);
+                //TODO: not fully tested!!
+                if (store.getters.isOnline) {
+                    return _private.service("participant", comp, dataProp);
+                } else {
+                    Promise.resolve(true);
+                }
             })
             .catch((err) => {
                 pathVue.$pathPouch.exceptions.save(err);
-                console.error('PathData', err);
+                return Promise.reject(err);
             })
-            .finally(() => {
 
-            });
     },
-    networkOnly: () => {
-
+    networkOnly: (comp, dataProp) => {
+        return _private.service("participant", comp, dataProp)
+            .catch((err) => {
+                pathVue.$pathPouch.exceptions.save(err);
+                return Promise.reject(err);
+            })
     },
     cacheOnly: (dataOnly) => {
-
+        return _private.cache("participant", comp, dataProp, true)
+            .catch((err) => {
+                pathVue.$pathPouch.exceptions.save(err);
+                return Promise.reject(err);
+            })
     }
 }
 
@@ -31,16 +44,19 @@ const login = {
 
 }
 
-export { participantApi, login };
+export {
+    participantApi,
+    login
+};
 
 const _private = {
     /**
-    *  @param {DataBase} db What local database are we looking at? (required)
-    *  @param {VueComponent} comp The component which the call is comming from 'This'. (required)
-    *  @param {string} [dataProp] the data property in which to place records in. (defaults to dataList)
-    *  @param {string} [progress] the data property in which to set our progress int value. (defaults to dataProgress)
-    *  @param {bool} [dataOnly] return just data or the whole pouch document. (defaults to false)
-    */
+     *  @param {DataBase} db What local database are we looking at? (required)
+     *  @param {VueComponent} comp The component which the call is comming from 'This'. (required)
+     *  @param {string} [dataProp] the data property in which to place records in. (defaults to dataList)
+     *  @param {string} [progress] the data property in which to set our progress int value. (defaults to dataProgress)
+     *  @param {bool} [dataOnly] return just data or the whole pouch document. (defaults to false)
+     */
     cache: function () {
         var db = arguments[0],
             comp = arguments[1],
@@ -65,12 +81,19 @@ const _private = {
         comp[progress] = 10;
 
         return pathVue.$pathPouch[db].getAll()
-            .then(function name(documents) {
+            .then((documents) => {
                 documents.rows.forEach(document => {
                     let documentOrData = dataOnly ? document.doc.data : document;
                     if (documentOrData) {
-                        documentOrData.Cached = true;
-                        comp[prop].push(documentOrData);
+                        let hasValue = comp[prop].find((data) => {
+                            return (data && documentOrData) && (data.Id === documentOrData.Id);
+                        });
+                        let index = comp[prop].indexOf(hasValue);
+                        if (index !== -1) {
+                            comp[prop].splice(index, 1, documentOrData);
+                        } else {
+                            comp[prop].push(documentOrData);
+                        }
                     }
                 });
                 comp[progress] = 50;
@@ -121,15 +144,14 @@ const _private = {
                         let records = data.data;
                         if (records.length > 0) {
                             comp[progress] = 60;
-                            records.forEach(record => {
+                            records.forEach((record) => {
                                 var currentRecord = comp[prop].find((data) => {
                                     return (data && record) && (record.Id === data.Id);
                                 });
-                                if (currentRecord) {
-                                    //TODO: currentRecord = record;
-                                    currentRecord.Cached = false;
+                                let index = comp[prop].indexOf(currentRecord);
+                                if (index !== -1) {
+                                    comp[prop].splice(index, 1, record);
                                 } else {
-                                    record.Cached = false;
                                     comp[prop].push(record);
                                 }
                                 pathVue.$pathPouch[db].saveOrUpdate(record);
@@ -156,4 +178,3 @@ const _private = {
             })
     }
 }
-

@@ -12,7 +12,9 @@ import Setting from "./views/Setting.vue";
 
 import Development from "@/views/Development.vue";
 import SandBox from "@/views/SandBox.vue";
-import { route } from "@/statics/pathConstants";
+import {
+  route
+} from "@/statics/pathConstants";
 
 Vue.use(Router);
 // these routes point to areas of the app and can
@@ -20,8 +22,7 @@ Vue.use(Router);
 // this is checked in main.js in router.beforeResolve
 // https://router.vuejs.org/
 const pathRouter = new Router({
-  routes: [
-    {
+  routes: [{
       path: route.login.path,
       name: route.login.name,
       component: Login

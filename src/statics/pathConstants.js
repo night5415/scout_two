@@ -5,17 +5,50 @@ var system = {
 };
 
 var route = {
-  login: { name: "login", path: "/" },
-  home: { name: "home", path: "/home" },
-  new: { name: "new", path: "/new" },
-  myday: { name: "myday", path: "/myday" },
-  patient: { name: "patient", path: "/patient" },
-  offline: { name: "offline", path: "/offline" },
-  phi: { name: "phi", path: null },
-  dev: { name: "development", path: "/Dev" },
-  sandbox: { name: "sandbox", path: "/sandbox" },
-  error: { name: "error", path: "/error" },
-  setting: { name: "setting", path: "/setting" }
+  login: {
+    name: "login",
+    path: "/"
+  },
+  home: {
+    name: "home",
+    path: "/home"
+  },
+  new: {
+    name: "new",
+    path: "/new"
+  },
+  myday: {
+    name: "myday",
+    path: "/myday"
+  },
+  patient: {
+    name: "patient",
+    path: "/patient"
+  },
+  offline: {
+    name: "offline",
+    path: "/offline"
+  },
+  phi: {
+    name: "phi",
+    path: null
+  },
+  dev: {
+    name: "development",
+    path: "/Dev"
+  },
+  sandbox: {
+    name: "sandbox",
+    path: "/sandbox"
+  },
+  error: {
+    name: "error",
+    path: "/*"
+  },
+  setting: {
+    name: "setting",
+    path: "/setting"
+  }
 }
 
 var dataStore = {
@@ -29,4 +62,8 @@ var dataStore = {
   location: "location"
 }
 
-export { system, route, dataStore };
+export {
+  system,
+  route,
+  dataStore
+};
