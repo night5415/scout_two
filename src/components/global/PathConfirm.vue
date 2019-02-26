@@ -13,13 +13,14 @@
 </template>
 
 <script>
+import { button } from "@/statics/pathConstants";
 export default {
   name: "PathConfirm",
   mounted() {},
   data() {
     return {
       dialog: false,
-      title: "Are You Sure",
+      title: null,
       body: null,
       acceptBtnText: null,
       declineBtnText: null,
@@ -33,8 +34,11 @@ export default {
       if (options) {
         this.title = options.title;
         this.body = options.body;
-        this.acceptBtnText = options.accept || "Ok";
+        this.acceptBtnText = options.accept || button.accept;
         this.declineBtnText = options.decline;
+      } else {
+        this.acceptBtnText = button.accept;
+        this.declineBtnText = button.decline;
       }
 
       return new Promise((resolve, reject) => {

@@ -92,5 +92,4 @@ function getBaseUrl() {
     }
     return originalCatch.apply(this, arguments);
   };
-
 })(this.Promise);

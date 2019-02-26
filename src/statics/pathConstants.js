@@ -62,8 +62,14 @@ var dataStore = {
   location: "location"
 }
 
+var button = {
+  accept: "Accept",
+  decline: "Decline"
+}
+
 export {
   system,
   route,
-  dataStore
+  dataStore,
+  button
 };

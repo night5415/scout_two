@@ -2,14 +2,14 @@ import { toJson } from "really-relaxed-json";
 import axios from "axios";
 import router from "@/router";
 import store from "@/pathStore";
-import { api } from "@/custom_modules/PathApi";
-import { Promise } from "q";
+// import { api } from "@/custom_modules/PathApi";
+// import { Promise } from "q";
 
 const PathUtil = {
   install(Vue, baseUrl) {
     Vue.prototype.$pathUtil = {
-      baseUrl: baseUrl,
-      loginApi: `${baseUrl}/~api/login`,
+      //baseUrl: baseUrl,
+      // loginApi: `${baseUrl}/~api/login`,
       /**
        * This will check to see if the browser has the
        * capability to run the app..
@@ -31,9 +31,11 @@ const PathUtil = {
         var self = this,
           formData = new FormData(),
           deviceId = self.GenerateGuid(),
-          isOnline = store.getters.isOnline;
+          isOnline = store.getters.isOnline,
+          baseUrl = store.getters.baseUrl,
+          loginApi = `${baseUrl}/~api/login`;
 
-        if (!isOnline) {
+        if (false) {// (!isOnline) {
           return self
             .generateKey(`${userName}${passWord}`, `${userName}${passWord}`)
             .then(key => {
@@ -51,7 +53,7 @@ const PathUtil = {
           formData.append("subMode", "mobile");
           formData.append("deviceId", deviceId);
 
-          return axios.post(self.loginApi, formData).then(response => {
+          return axios.post(loginApi, formData).then(response => {
             if (response.data) {
               const loginInfo = toJson(response.data),
                 loginJson = JSON.parse(loginInfo),

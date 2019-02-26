@@ -4,7 +4,7 @@
       <v-layout>
         <v-flex>
           <v-toolbar flat>
-            <v-btn flat icon @click="loadData">
+            <v-btn flat icon @click="refresh">
               <v-icon>cached</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
@@ -34,7 +34,6 @@
 </template> 
 <script>
 import { participantApi } from "@/custom_modules/PathData";
-import { async, Promise } from "q";
 export default {
   data() {
     return {
@@ -69,6 +68,7 @@ export default {
           self.$data.dataProgress = 100;
           setTimeout(() => {
             self.$data.gridLoading = false;
+            self.$data.dataProgress = 0;
           }, 1000);
         })
         .catch(err => {});
@@ -76,8 +76,13 @@ export default {
     refresh() {
       var self = this;
       self.$data.gridLoading = true;
-      participantApi.networkOnly().finally(() => {
-        self.$data.gridLoading = true;
+      self.$data.dataProgress = 25;
+      participantApi.networkOnly(self).finally(() => {
+        self.$data.dataProgress = 100;
+        setTimeout(() => {
+          self.$data.gridLoading = false;
+          self.$data.dataProgress = 0;
+        }, 1000);
       });
     },
     async rowClick(item) {

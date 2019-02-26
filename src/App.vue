@@ -2,6 +2,7 @@
   <v-app :dark="darkTheme">
     <PathNavigation/>
     <PathConfirm ref="pathConfirm"/>
+    <PathSnack ref="pathSnack"/>
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
@@ -13,14 +14,22 @@
 <script>
 import PathNavigation from "@/components/global/PathNavigation";
 import PathConfirm from "@/components/global/PathConfirm";
+import PathSnack from "@/components/global/PathSnack";
 export default {
   name: "App",
-  components: { PathNavigation, PathConfirm },
+  components: { PathNavigation, PathConfirm, PathSnack },
   mounted() {
     let self = this;
+    //these will
     window.addEventListener("online", self.updateOnlineStatus);
     window.addEventListener("offline", self.updateOnlineStatus);
-    self.$root.$confirm = self.$refs.pathConfirm;
+
+    self.$root.$pathComponents = {
+      Confirm: self.$refs.pathConfirm.open,
+      Snack: self.$refs.pathSnack.showSnack
+    };
+    //set initial online status
+    self.$store.dispatch("updateIsOnline", navigator.onLine);
   },
   beforeDestroy() {
     window.removeEventListener("online", this.updateOnlineStatus);

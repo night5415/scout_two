@@ -20,10 +20,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-snackbar v-model="snackbar" :timeout="timeout">
-      {{snackMessage}}
-      <v-btn color="pink" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -59,11 +55,7 @@ export default {
   },
   data() {
     return {
-      snackbar: false,
-      snackMessage: "",
-      waiting: false,
-      timeout: 3000,
-      mode: null
+      waiting: false
     };
   },
   methods: {
@@ -101,8 +93,7 @@ export default {
               return Promise.resolve(true);
             })
             .catch(err => {
-              //self.$pathData.error.Save(err);
-
+              let snackMessage = "Hmmmmm, something went wrong";
               if (!err.response)
                 err.response = {
                   status: 502
@@ -110,19 +101,17 @@ export default {
 
               switch (err.response.status) {
                 case 502:
-                  self.snackMessage = "Unknown error";
+                  snackMessage = "Bad Gateway";
                   break;
                 case 401:
-                  self.snackMessage = "Username or Password is incorrect";
+                  snackMessage = "Username or Password is incorrect";
                   break;
                 case 500:
-                  self.snackMessage =
+                  snackMessage =
                     "Looks like the server is down, please try again later";
                   break;
-                default:
-                  self.snackMessage = "Hmmmmm, something went wrong";
               }
-              self.snackbar = true;
+              pathVue.$pathComponents.Snack(snackMessage);
             })
             .finally(function() {
               self.waiting = false;

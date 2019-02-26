@@ -8,7 +8,7 @@ const app = {
     dark: true,
     isOnline: true,
     isLoggedIn: false,
-    baseUrl: ''
+    baseUrl: 'https://test-lighthouse.abpathfinder.net'
   },
   mutations: {
     _updateLogin(state, val) {
@@ -30,6 +30,9 @@ const app = {
     },
     isLoggedIn: state => {
       return state.isLoggedIn;
+    },
+    baseUrl: state => {
+      return state.baseUrl;
     }
   },
   actions: {

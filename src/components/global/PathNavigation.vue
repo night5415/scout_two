@@ -85,8 +85,8 @@ export default {
     },
     logOut(self) {
       var self = this;
-      self.$root.$confirm
-        .open({
+      pathVue.$pathComponents
+        .Confirm({
           title: "Are you sure?",
           body: "Clicking yes will log you out!",
           accept: "Yes",

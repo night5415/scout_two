@@ -8,7 +8,7 @@ const api = class Api {
 
   get participant() {
     let self = this,
-      url = `${self.getBaseUrl()}/scout/~api/participant`,
+      url = `${store.getters.baseUrl}/scout/~api/participant`,
       param = {
         params: {
           securityToken: store.getters.Token,

@@ -1,20 +1,29 @@
 <template>
-  <v-data-table :headers="headers" :items="desserts" item-key="Id">
-    <template slot="items" slot-scope="props">
-      <tr @click="props.expanded = !props.expanded">
-        <td nowrap>{{ props.item.Date | moment("MM-DD-YY @ h:mm:ss a") }}</td>
-        <td>{{ props.item.Message }}</td>
-      </tr>
-    </template>
-    <template slot="expand" slot-scope="props">
-      <v-card flat>
-        <v-card-text>{{props.item.Stack}}</v-card-text>
-      </v-card>
-    </template>
-  </v-data-table>
+  <v-flex>
+    <v-toolbar flat>
+      <v-btn flat icon @click="refresh">
+        <v-icon>cached</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <v-data-table :headers="headers" :items="dataList" item-key="Id">
+      <v-progress-linear slot="progress" height="3" v-model="dataProgress"></v-progress-linear>
+      <template slot="items" slot-scope="props">
+        <tr @click="props.expanded = !props.expanded">
+          <td nowrap>{{ props.item.date }}</td>
+          <td>{{ props.item.exception }}</td>
+        </tr>
+      </template>
+      <template slot="expand" slot-scope="props">
+        <v-card flat>
+          <v-card-text>{{props.item.exception}}</v-card-text>
+        </v-card>
+      </template>
+    </v-data-table>
+  </v-flex>
 </template>
 
 <script>
+import { exceptionApi } from "@/custom_modules/PathData";
 export default {
   data() {
     return {
@@ -22,39 +31,36 @@ export default {
         {
           text: "Date",
           align: "left",
-          value: "Date"
+          value: "date"
         },
         {
           text: "message",
           value: "Message"
         }
       ],
-      desserts: []
+      dataList: [],
+      gridSearch: "",
+      gridLoading: false,
+      dataProgress: 0
     };
   },
   mounted() {
-    // var self = this;
-    // self.$pathData.error
-    //   .Get()
-    //   .then(records => {
-    //     records.forEach(err => {
-    //       self.desserts.push({
-    //         Id: err.Date, //milliseconds
-    //         Date: new Date(err.Date),
-    //         Message: err.Error.message,
-    //         Stack: err.Error.stack
-    //       });
-    //     });
-    //   })
-    //   .catch(err => {
-    //     self.$pathSaveError(err);
-    //   });
+    var self = this,
+      list = self.$data.dataList;
+    if (list && list.length === 0) {
+      self.refresh();
+    }
   },
   activated() {
     console.log("error tab is activated");
   },
   methods: {
-    name() {}
+    refresh() {
+      var self = this;
+      exceptionApi.cacheOnly(self).then(result => {
+        var x = self.$data;
+      });
+    }
   }
 };
 </script>

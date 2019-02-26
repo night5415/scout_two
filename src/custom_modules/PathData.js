@@ -2,6 +2,7 @@ import {
     api
 } from "@/custom_modules/PathApi";
 import store from "@/pathStore";
+import { dataStore } from "@/statics/pathConstants"
 
 const participantApi = {
     /**
@@ -9,32 +10,29 @@ const participantApi = {
      * @param {string} dataProp An Array data property located on the component 
      */
     cacheFirst: (comp, dataProp) => {
-        return _private.cache("participant", comp, dataProp, true)
+        return _private.cache(dataStore.participant, comp, dataProp, true)
             .then(() => {
                 //TODO: not fully tested!!
                 if (store.getters.isOnline) {
-                    return _private.service("participant", comp, dataProp);
+                    return _private.service(dataStore.participant, comp, dataProp);
                 } else {
                     Promise.resolve(true);
                 }
             })
             .catch((err) => {
-                pathVue.$pathPouch.exceptions.save(err);
                 return Promise.reject(err);
             })
 
     },
     networkOnly: (comp, dataProp) => {
-        return _private.service("participant", comp, dataProp)
+        return _private.service(dataStore.participant, comp, dataProp)
             .catch((err) => {
-                pathVue.$pathPouch.exceptions.save(err);
                 return Promise.reject(err);
             })
     },
-    cacheOnly: (dataOnly) => {
-        return _private.cache("participant", comp, dataProp, true)
+    cacheOnly: (comp, dataProp) => {
+        return _private.cache(dataStore.participant, comp, dataProp, true)
             .catch((err) => {
-                pathVue.$pathPouch.exceptions.save(err);
                 return Promise.reject(err);
             })
     }
@@ -44,9 +42,19 @@ const login = {
 
 }
 
+const exceptionApi = {
+    cacheOnly: (comp, dataProp) => {
+        return _private.cache(dataStore.exceptions, comp, dataProp, true)
+            .catch((err) => {
+                return Promise.reject(err);
+            })
+    }
+}
+
 export {
     participantApi,
-    login
+    loginApi,
+    exceptionApi
 };
 
 const _private = {
@@ -83,7 +91,7 @@ const _private = {
         return pathVue.$pathPouch[db].getAll()
             .then((documents) => {
                 documents.rows.forEach(document => {
-                    let documentOrData = dataOnly ? document.doc.data : document;
+                    let documentOrData = dataOnly ? document.doc.data || document.doc : document;
                     if (documentOrData) {
                         let hasValue = comp[prop].find((data) => {
                             return (data && documentOrData) && (data.Id === documentOrData.Id);
@@ -143,7 +151,6 @@ const _private = {
                     if (data.success) {
                         let records = data.data;
                         if (records.length > 0) {
-                            comp[progress] = 60;
                             records.forEach((record) => {
                                 var currentRecord = comp[prop].find((data) => {
                                     return (data && record) && (record.Id === data.Id);
@@ -156,7 +163,7 @@ const _private = {
                                 }
                                 pathVue.$pathPouch[db].saveOrUpdate(record);
                             });
-                            comp[progress] = 95;
+                            comp[progress] = 75;
                             return Promise.resolve(true);
                         } else {
                             //no records

@@ -11,12 +11,8 @@ Again after installation type:
 
 >vue --version
 
-If you've done everything right you should see the version of Vue installed locally on your machine.
-
-
-
-# Project Settup
-
+If you've done everything right you should see the version of Vue installed locally on your machine. 
+# Project Settup 
 Navigate to the location of the Data Collector project and open a command prompt at that location. Run the following command:
 
 >npm install
@@ -27,11 +23,19 @@ This will install all the packages required to run the project locally that are 
 
 Or by opening the Vue UI by using the command 
 
->vue ui
+>vue ui 
 
-This opens up a Chrome instance which interfaces with the Vue Cli to make things a bit easier, from here we can manage plugins, dependencies and some basic configs. Under the *Tasks* tab we have the ability to start a local server, build lint or inspect.
-
-Another helpful tool is to install the [Vue Chrome extension](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en), this adds a tab in the Dev tool window which allows inspection of the Vue instance.
+This opens up a Chrome instance which interfaces with the Vue Cli to make things a bit easier, from here we can manage plugins, dependencies and some basic configs. Under the *Tasks* tab we have the ability to start a local server, build lint or inspect. 
+Another helpful tool is to install the [Vue Chrome extension](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en), this adds a tab in the Dev tool window which allows inspection of the Vue instance.  
+# Technology
+| Name      | Description                 | Link                                                        |
+|    :---   |    :---                     |                             :---:                           |
+| Vue.js    | Javascript Framework        | [link](https://vuejs.org/)                                  |
+| Vuex      | State Management            | [link](https://vuex.vuejs.org/)                             |
+| Vuetify   | UI Component libray         | [link](https://vuetifyjs.com/en/getting-started/quick-start)|
+|PouchDb    | Local Database              | [link](https://pouchdb.com/)                                |
+ 
+ 
 
 
 

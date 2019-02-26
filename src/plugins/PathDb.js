@@ -160,6 +160,7 @@ var _exceptionFunc = {
   save: function (ex) {
     var today = new Date();
     return _exceptionDb.post({
+      Id: Date.now(),
       date: today.toLocaleDateString(),
       time: today.toLocaleTimeString(),
       exception: ex
@@ -238,7 +239,8 @@ var _participantFunc = {
     return _participantDb.getRowCount();
   }
 };
-//these are added to each DB within their respective context
+// these are added to each DB within their respective context, add these to PouchDB.plugin
+// above.
 var pouchPlugins = {
   getRowCount: function () {
     var self = this;
