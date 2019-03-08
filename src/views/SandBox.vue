@@ -18,7 +18,7 @@
           >
             <v-progress-linear slot="progress" height="3" v-model="dataProgress"></v-progress-linear>
             <template slot="items" slot-scope="props">
-              <tr @click="rowClick(props.item)">
+              <tr @click="rowClick(props.item)"> 
                 <td class="text-xs-right">{{ props.item.FirstName }}</td>
                 <td class="text-xs-right">{{ props.item.LastName }}</td>
                 <td class="text-xs-right">{{ props.item.IsActive }}</td>

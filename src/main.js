@@ -24,7 +24,6 @@ Vue.use(PathDb);
 Vue.use(VueSignaturePad);
 Vue.use(VueAxios, Axios);
 Vue.use(VueMoment);
-Vue.config.productionTip = true;
 //this is going to need some work
 window.onerror = function (messageOrEvent, source, lineno, colno, error) {
   let err = {
