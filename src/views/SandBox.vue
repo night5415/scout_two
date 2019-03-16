@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       dataList: [],
-      gridSearch: "",
+      gridSearch: "a",
       gridLoading: false,
       dataProgress: 0,
       headers: [
